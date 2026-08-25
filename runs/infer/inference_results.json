@@ -1,0 +1,61 @@
+{
+  "status": "SUCCESS",
+  "model": "D:\\Python\\Projects\\114\\runs\\train\\yolov8n_p2_home_fire\\weights\\best.pt",
+  "source": "C:\\Users\\phong\\Downloads\\Fire\\Home Fire Dataset\\test\\images",
+  "output_directory": "D:\\Python\\Projects\\114\\runs\\infer",
+  "total_images_processed": 5,
+  "total_detections": 1,
+  "class_detection_counts": {
+    "fire": 1,
+    "smoke": 0
+  },
+  "images": [
+    {
+      "image_name": "test_1.jpg",
+      "image_path": "C:\\Users\\phong\\Downloads\\Fire\\Home Fire Dataset\\test\\images\\test_1.jpg",
+      "output_path": "D:\\Python\\Projects\\114\\runs\\infer\\test_1.jpg",
+      "num_detections": 0,
+      "detections": []
+    },
+    {
+      "image_name": "test_10.jpg",
+      "image_path": "C:\\Users\\phong\\Downloads\\Fire\\Home Fire Dataset\\test\\images\\test_10.jpg",
+      "output_path": "D:\\Python\\Projects\\114\\runs\\infer\\test_10.jpg",
+      "num_detections": 0,
+      "detections": []
+    },
+    {
+      "image_name": "test_100.jpg",
+      "image_path": "C:\\Users\\phong\\Downloads\\Fire\\Home Fire Dataset\\test\\images\\test_100.jpg",
+      "output_path": "D:\\Python\\Projects\\114\\runs\\infer\\test_100.jpg",
+      "num_detections": 0,
+      "detections": []
+    },
+    {
+      "image_name": "test_1000.jpg",
+      "image_path": "C:\\Users\\phong\\Downloads\\Fire\\Home Fire Dataset\\test\\images\\test_1000.jpg",
+      "output_path": "D:\\Python\\Projects\\114\\runs\\infer\\test_1000.jpg",
+      "num_detections": 0,
+      "detections": []
+    },
+    {
+      "image_name": "test_1001.jpg",
+      "image_path": "C:\\Users\\phong\\Downloads\\Fire\\Home Fire Dataset\\test\\images\\test_1001.jpg",
+      "output_path": "D:\\Python\\Projects\\114\\runs\\infer\\test_1001.jpg",
+      "num_detections": 1,
+      "detections": [
+        {
+          "class_id": 0,
+          "class_name": "fire",
+          "confidence": 0.5503,
+          "box_xyxy": [
+            544.88,
+            330.78,
+            613.79,
+            410.39
+          ]
+        }
+      ]
+    }
+  ]
+}

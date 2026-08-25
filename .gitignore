@@ -1,3 +1,6 @@
+# Agent logs and scratchpads
+.agents/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -216,3 +219,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+ORIGINAL_REQUEST.md
+PROJECT_REQUIREMENTS.md
+PROJECT.md
+TEST_INFRA.md
+TEST_READY.md
+manual_review_needed.json
+verify_dataset.py
+yolo26n.pt
+test_metrics.csv
+DATASET.md
+dataset_audit_report.md
+dataset_audit_report.json
+dataset_report.json
+dataset_verification_report.json
+tests/
