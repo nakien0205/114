@@ -219,6 +219,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Others
 ORIGINAL_REQUEST.md
 PROJECT_REQUIREMENTS.md
 PROJECT.md
@@ -234,3 +236,4 @@ dataset_audit_report.json
 dataset_report.json
 dataset_verification_report.json
 tests/
+datasets/

@@ -4,7 +4,7 @@ Evaluation and Quantitative Metrics Reporting CLI for Fire and Smoke Detection.
 Computes Precision, Recall, mAP50, mAP50-95 on validation/test sets, and exports JSON and CSV reports.
 
 Usage:
-    python evaluate.py --weights runs/train/yolov8n_p2_home_fire/weights/best.pt [--data data.yaml] [--split test] [--save-json metrics.json] [--save-csv metrics.csv]
+    python evaluate.py --weights PATH [--data PATH] [--split test] [--save-json metrics.json] [--save-csv metrics.csv]
 """
 
 from __future__ import annotations

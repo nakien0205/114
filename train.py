@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
 Transfer Learning Training Pipeline CLI for Fire and Smoke Detection.
-Loads pretrained YOLOv8-P2 checkpoint and fine-tunes on Home Fire Dataset.
+Loads the configured pretrained checkpoint and fine-tunes on the configured dataset.
 
 Usage:
-    python train.py [--weights D:/Python/Projects/Maritime-SAR/best.pt] [--data data.yaml] [--epochs 50] [--batch 16] [--imgsz 640] [--device 0]
+    python train.py [--weights PATH] [--data PATH] [--epochs N] [--batch N] [--imgsz N] [--device 0]
+
+Values omitted from the command line are loaded from the config.yaml file.
 """
 
 from __future__ import annotations

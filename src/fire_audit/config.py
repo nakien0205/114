@@ -4,9 +4,12 @@ Central configuration, dataclasses, and constants for fire_audit.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Set, Tuple
+
+import yaml
 
 # Class definitions
 CLASS_MAP: Dict[int, str] = {0: "fire", 1: "smoke"}
@@ -21,10 +24,112 @@ DEFAULT_EPSILON: float = 1e-4
 VALID_IMAGE_EXTENSIONS: Set[str] = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 VALID_LABEL_EXTENSIONS: Set[str] = {".txt"}
 
-# Default dataset locations
-DEFAULT_DATA_ROOT: Path = Path(r"C:\Users\phong\Downloads\Fire")
-HOME_FIRE_DIR_NAME: str = "Home Fire Dataset"
-FASDD_CV_DIR_NAME: str = "FASDD_CV"
+# Artifact directories are kept inside each dataset root so outputs from
+# different datasets cannot overwrite one another.
+MANIFEST_DIR_NAME: str = "manifest"
+SPLITS_DIR_NAME: str = "splits"
+
+# The editable runtime configuration is kept at the project root.
+PROJECT_ROOT: Path = Path(__file__).resolve().parents[2]
+DEFAULT_USER_CONFIG_PATH: Path = PROJECT_ROOT / "config.yaml"
+
+
+def get_user_config_path(config_path: Optional[Path] = None) -> Path:
+    """Return the project config path, honoring an environment override."""
+    if config_path is not None:
+        return Path(config_path).expanduser().resolve()
+    env_path = os.getenv("CONFIG")
+    if env_path:
+        return Path(env_path).expanduser().resolve()
+    return DEFAULT_USER_CONFIG_PATH
+
+
+def load_user_config(config_path: Optional[Path] = None) -> Dict[str, Any]:
+    """Load the shared external YAML config, or return an empty config."""
+    path = get_user_config_path(config_path)
+    if not path.is_file():
+        return {}
+    with open(path, "r", encoding="utf-8") as config_file:
+        data = yaml.safe_load(config_file) or {}
+    if not isinstance(data, dict):
+        raise ValueError(f"User config must contain a YAML mapping: {path}")
+    return data
+
+
+def resolve_user_path(value: Optional[Any], config_path: Optional[Path] = None) -> Optional[Path]:
+    """Resolve a path value relative to the project root."""
+    if value is None or str(value).strip() == "":
+        return None
+    raw = os.path.expandvars(str(value)).replace("${PROJECT_ROOT}", str(PROJECT_ROOT))
+    path = Path(raw).expanduser()
+    return path.resolve() if path.is_absolute() else (PROJECT_ROOT / path).resolve()
+
+
+def get_configured_data_path(config_path: Optional[Path] = None) -> Optional[Path]:
+    """Return the configured dataset root or YOLO data YAML path."""
+    config = load_user_config(config_path)
+    paths = config.get("paths", {})
+    value = config.get("data_path")
+    if value is None and isinstance(paths, dict):
+        value = paths.get("data") or paths.get("data_path")
+    return resolve_user_path(value, config_path=config_path)
+
+
+def get_configured_data_yaml_path(config_path: Optional[Path] = None) -> Optional[Path]:
+    """Return a usable YOLO data YAML path from ``data_path``."""
+    data_path = get_configured_data_path(config_path)
+    if data_path is None:
+        return None
+    if data_path.suffix.lower() in {".yaml", ".yml"}:
+        return data_path
+    for candidate in (data_path / MANIFEST_DIR_NAME / "data.yaml", data_path / "data.yaml"):
+        if candidate.is_file():
+            return candidate.resolve()
+    return data_path / MANIFEST_DIR_NAME / "data.yaml"
+
+
+def get_configured_data_root(config_path: Optional[Path] = None) -> Optional[Path]:
+    """Return a dataset directory derived from the configured data path."""
+    data_path = get_configured_data_path(config_path)
+    if data_path is None:
+        return None
+    if data_path.is_file() or data_path.suffix.lower() in {".yaml", ".yml"}:
+        return data_path.parent.parent if data_path.parent.name == MANIFEST_DIR_NAME else data_path.parent
+    return data_path
+
+
+def get_training_config(config_path: Optional[Path] = None) -> Dict[str, Any]:
+    """Return training settings with configured paths resolved."""
+    config = load_user_config(config_path)
+    paths = config.get("paths", {})
+    training = config.get("training", {})
+    settings = dict(training) if isinstance(training, dict) else {}
+    weights = settings.get("weights") or settings.get("weights_path")
+    if weights is None and isinstance(paths, dict):
+        weights = paths.get("weights") or paths.get("weights_path")
+    resolved_weights = resolve_user_path(weights, config_path=config_path)
+    if resolved_weights is not None:
+        settings["weights"] = resolved_weights
+    data_path = get_configured_data_yaml_path(config_path)
+    if data_path is not None:
+        settings.setdefault("data", data_path)
+    return settings
+
+
+def get_configured_weights_path(config_path: Optional[Path] = None) -> Optional[Path]:
+    """Return the checkpoint path configured for training/evaluation/inference."""
+    settings = get_training_config(config_path)
+    return resolve_user_path(settings.get("weights"), config_path=config_path)
+
+
+def get_configured_inference_source(config_path: Optional[Path] = None) -> Optional[Path]:
+    """Return the optional inference source configured by the user."""
+    config = load_user_config(config_path)
+    paths = config.get("paths", {})
+    value = config.get("inference_source")
+    if value is None and isinstance(paths, dict):
+        value = paths.get("inference_source") or paths.get("source")
+    return resolve_user_path(value, config_path=config_path)
 
 
 @dataclass

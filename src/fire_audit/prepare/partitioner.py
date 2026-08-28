@@ -1,6 +1,6 @@
-"""
-Sequence-aware dataset partitioner module.
-Partitions FASDD_CV and training datasets into leak-free train and validation splits
+"""Sequence-aware dataset partitioner for arbitrary image datasets.
+
+Partitions datasets into leak-free train and validation splits
 using deterministic sequence clustering and stratified class balancing.
 """
 
@@ -15,7 +15,6 @@ from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union
 try:
     from src.fire_audit.config import (
         DEFAULT_EPSILON,
-        FASDD_CV_DIR_NAME,
         DatasetScanResult,
         ImageRecord,
         SegmentedFrame,
@@ -25,7 +24,6 @@ try:
 except ImportError:
     from fire_audit.config import (
         DEFAULT_EPSILON,
-        FASDD_CV_DIR_NAME,
         DatasetScanResult,
         ImageRecord,
         SegmentedFrame,
@@ -38,7 +36,7 @@ except ImportError:
 @dataclass
 class PartitionResult:
     """Result of partitioning a dataset into train and validation splits."""
-    dataset_name: str = "FASDD_CV"
+    dataset_name: str = "dataset"
     root_path: Path = field(default_factory=lambda: Path("."))
     train_images: List[Path] = field(default_factory=list)
     val_images: List[Path] = field(default_factory=list)
@@ -148,7 +146,7 @@ class SequencePartitioner:
     def partition_segmented_frames(
         self,
         records: Sequence[SegmentedFrame],
-        dataset_name: str = "FASDD_CV",
+        dataset_name: str = "dataset",
         root_path: Optional[Path] = None,
         train_ratio: Optional[float] = None,
         seed: Optional[int] = None,
@@ -355,7 +353,7 @@ class SequencePartitioner:
     def partition(
         self,
         data: Union[SegmentationResult, Sequence[Union[SegmentedFrame, ImageRecord, Dict[str, Any], Path]], DatasetScanResult],
-        dataset_name: str = "FASDD_CV",
+        dataset_name: str = "dataset",
         root_path: Optional[Path] = None,
         train_ratio: Optional[float] = None,
         seed: Optional[int] = None,
@@ -437,24 +435,24 @@ class SequencePartitioner:
 
         raise TypeError(f"Unsupported data type for SequencePartitioner: {type(data)}")
 
-    def partition_fasdd_cv(
+    def partition_dataset(
         self,
-        fasdd_root: Path,
+        dataset_root: Path,
         validate_images: bool = True,
         use_segmentation: bool = True,
     ) -> PartitionResult:
         """
-        Scan and partition FASDD_CV dataset into train and val splits.
-        Uses VideoSegmentationEngine when available, with fallback to DatasetScanner.
+        Scan and partition a dataset into train and validation splits.
+        Uses VideoSegmentationEngine when available, with a scanner fallback.
         """
         result = PartitionResult(
-            dataset_name="FASDD_CV",
-            root_path=fasdd_root,
+            dataset_name=dataset_root.name,
+            root_path=dataset_root,
             train_ratio=self.train_ratio,
             random_seed=self.random_seed,
         )
 
-        if not fasdd_root.exists():
+        if not dataset_root.exists():
             return result
 
         if use_segmentation:
@@ -466,18 +464,35 @@ class SequencePartitioner:
                 engine = VideoSegmentationEngine()
 
 
-                seg_res = engine.segment_dataset(fasdd_root)
+                seg_res = engine.segment_dataset(dataset_root)
                 part_res = self.partition_segmented_frames(
                     seg_res.records,
-                    dataset_name="FASDD_CV",
-                    root_path=fasdd_root,
+                    dataset_name=dataset_root.name,
+                    root_path=dataset_root,
                 )
                 part_res.segmentation_result = seg_res
                 return part_res
             except Exception:
                 pass
 
-        scan_res = self.scanner.scan_fasdd_cv(fasdd_root, validate_images=validate_images)
+        # Split-based exports use train/valid/test/images directories rather
+        # than a flat images/ directory. Reuse the split-aware scanner
+        # scanner for that topology so those datasets are still partitioned.
+        if not (dataset_root / "images").is_dir() and any(
+            (dataset_root / name / "images").is_dir()
+            for name in ("train", "valid", "val", "test")
+        ):
+            scan_res = self.scanner.scan_split_dataset(
+                dataset_root,
+                validate_images=validate_images,
+                dataset_name=dataset_root.name,
+            )
+        else:
+            scan_res = self.scanner.scan_dataset(
+                dataset_root,
+                dataset_name=dataset_root.name,
+                validate_images=validate_images,
+            )
         return self.partition_from_scan_result(scan_res)
 
     def partition_from_scan_result(
@@ -538,7 +553,7 @@ class SequencePartitioner:
     def partition_from_records(
         self,
         records: List[ImageRecord],
-        dataset_name: str = "FASDD_CV",
+        dataset_name: str = "dataset",
         root_path: Optional[Path] = None,
     ) -> PartitionResult:
         """Partition directly from a list of ImageRecord objects."""
@@ -551,21 +566,21 @@ class SequencePartitioner:
 
 
 def partition_dataset_by_sequence(
-    fasdd_root: Path,
+    dataset_root: Path,
     train_ratio: float = 0.8,
     seed: int = 42,
     validate_images: bool = True,
     use_segmentation: bool = True,
     epsilon: float = DEFAULT_EPSILON,
 ) -> PartitionResult:
-    """Convenience function to partition FASDD_CV by sequence."""
+    """Convenience function to partition one dataset by sequence."""
     partitioner = SequencePartitioner(
         train_ratio=train_ratio,
         random_seed=seed,
         epsilon=epsilon,
     )
-    return partitioner.partition_fasdd_cv(
-        fasdd_root,
+    return partitioner.partition_dataset(
+        dataset_root,
         validate_images=validate_images,
         use_segmentation=use_segmentation,
     )

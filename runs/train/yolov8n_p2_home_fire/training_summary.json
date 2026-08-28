@@ -1,0 +1,17 @@
+{
+  "status": "COMPLETED",
+  "save_dir": "D:\\Python\\Projects\\114\\runs\\train\\yolov8n_p2_home_fire",
+  "best_checkpoint": "D:\\Python\\Projects\\114\\runs\\train\\yolov8n_p2_home_fire\\weights\\best.pt",
+  "last_checkpoint": "D:\\Python\\Projects\\114\\runs\\train\\yolov8n_p2_home_fire\\weights\\last.pt",
+  "epochs_trained": 3,
+  "device": "0",
+  "data_config": "D:\\Python\\Projects\\114\\data.yaml",
+  "source_weights": "D:\\Python\\Projects\\Maritime-SAR\\best.pt",
+  "metrics_summary": {
+    "metrics/precision(B)": 0.40553856907994124,
+    "metrics/recall(B)": 0.3977314611450239,
+    "metrics/mAP50(B)": 0.3699803528327368,
+    "metrics/mAP50-95(B)": 0.17189806981738082,
+    "fitness": 0.17189806981738082
+  }
+}

@@ -1,6 +1,4 @@
-"""
-Dataset discovery and scanning engine for Home Fire Dataset and FASDD_CV.
-"""
+"""Dataset discovery and validation engine for arbitrary image datasets."""
 
 from __future__ import annotations
 
@@ -13,8 +11,6 @@ from PIL import Image
 
 from src.fire_audit.config import (
     DEFAULT_EPSILON,
-    FASDD_CV_DIR_NAME,
-    HOME_FIRE_DIR_NAME,
     VALID_IMAGE_EXTENSIONS,
     DatasetScanResult,
     ImageRecord,
@@ -42,10 +38,10 @@ class DatasetScanner:
         """Check whether a file matches accepted image extensions."""
         return path.is_file() and path.suffix.lower() in self.image_extensions
 
-    def extract_fasdd_sequence_id(self, filename: str) -> str:
+    def extract_sequence_id(self, filename: str) -> str:
         """
-        Extract sequence identifier from FASDD_CV filename.
-        Example: 'bothFireAndSmoke_CV000000.jpg' -> 'bothFireAndSmoke'
+        Extract a stable sequence identifier from a frame filename.
+        Numeric suffixes are grouped into blocks to preserve local continuity.
         """
         stem = Path(filename).stem
         if "_CV" in stem:
@@ -61,20 +57,20 @@ class DatasetScanner:
                 return prefix
         return stem
 
-    def scan_home_fire(
+    def scan_split_dataset(
         self,
         root_path: Path,
         validate_images: bool = True,
+        dataset_name: str = "dataset",
     ) -> DatasetScanResult:
         """
-        Scan Home Fire Dataset structure:
+        Scan dataset structure:
         root/
           train/images, train/labels
           val/images, val/labels
           test/images, test/labels
         or flat layout.
         """
-        dataset_name = "Home Fire Dataset"
         result = DatasetScanResult(dataset_name=dataset_name, root_path=root_path)
 
         if not root_path.exists():
@@ -96,7 +92,7 @@ class DatasetScanner:
                     if self.is_image_file(entry):
                         lbl_file = lbl_dir / f"{entry.stem}.txt"
                         label_path = lbl_file if lbl_file.exists() else None
-                        seq_id = f"home_fire_{split_name}_{entry.stem.split('_')[0]}"
+                        seq_id = f"dataset_{split_name}_{entry.stem.split('_')[0]}"
                         raw_pairs.append((entry, label_path, split_name, seq_id))
         else:
             # Fallback: scan any images under root
@@ -110,23 +106,23 @@ class DatasetScanner:
                         if not candidate_lbl.exists():
                             candidate_lbl = p.parent / f"{p.stem}.txt"
                         label_path = candidate_lbl if candidate_lbl.exists() else None
-                        raw_pairs.append((p, label_path, "raw", f"home_fire_{p.stem}"))
+                        raw_pairs.append((p, label_path, "raw", f"dataset_{p.stem}"))
 
         self._process_records(raw_pairs, dataset_name, result, validate_images)
         return result
 
-    def scan_fasdd_cv(
+    def scan_flat_dataset(
         self,
         root_path: Path,
         validate_images: bool = True,
+        dataset_name: str = "dataset",
     ) -> DatasetScanResult:
         """
-        Scan FASDD_CV structure:
+        Scan a flat dataset structure:
         root/
           images/
           annotations/YOLO_CV/labels/ (or annotations/YOLO_CV/ or labels/)
         """
-        dataset_name = "FASDD_CV"
         result = DatasetScanResult(dataset_name=dataset_name, root_path=root_path)
 
         if not root_path.exists():
@@ -158,7 +154,7 @@ class DatasetScanner:
                         if candidate_lbl.exists():
                             label_path = candidate_lbl
 
-                    seq_id = self.extract_fasdd_sequence_id(entry.name)
+                    seq_id = self.extract_sequence_id(entry.name)
                     raw_pairs.append((entry, label_path, "raw", seq_id))
 
         self._process_records(raw_pairs, dataset_name, result, validate_images)
@@ -174,18 +170,15 @@ class DatasetScanner:
         Auto-detect dataset topology and scan accordingly.
         """
         name = dataset_name or root_path.name
-        norm_name = name.lower()
-
-        if "home" in norm_name or "indoor" in norm_name:
-            return self.scan_home_fire(root_path, validate_images=validate_images)
-        elif "fasdd" in norm_name:
-            return self.scan_fasdd_cv(root_path, validate_images=validate_images)
 
         # Check directory structure
         if (root_path / "annotations" / "YOLO_CV").exists():
-            return self.scan_fasdd_cv(root_path, validate_images=validate_images)
-        if (root_path / "train" / "images").exists() or (root_path / "test" / "images").exists():
-            return self.scan_home_fire(root_path, validate_images=validate_images)
+            return self.scan_flat_dataset(root_path, validate_images=validate_images, dataset_name=name)
+        if any((root_path / split / "images").is_dir() for split in ("train", "valid", "val", "test")):
+            return self.scan_split_dataset(root_path, validate_images=validate_images, dataset_name=name)
+
+        if (root_path / "images").is_dir():
+            return self.scan_flat_dataset(root_path, validate_images=validate_images, dataset_name=name)
 
         # Generic scan
         result = DatasetScanResult(dataset_name=name, root_path=root_path)
@@ -289,28 +282,6 @@ class DatasetScanner:
             if corrupt_img:
                 result.corrupt_images.append(corrupt_img)
             result.records.append(rec)
-
-
-def scan_home_fire_dataset(
-    root_path: Path,
-    validate_images: bool = True,
-    epsilon: float = DEFAULT_EPSILON,
-    max_workers: int = 32,
-) -> DatasetScanResult:
-    """Convenience function to scan Home Fire Dataset."""
-    scanner = DatasetScanner(epsilon=epsilon, max_workers=max_workers)
-    return scanner.scan_home_fire(root_path, validate_images=validate_images)
-
-
-def scan_fasdd_cv_dataset(
-    root_path: Path,
-    validate_images: bool = True,
-    epsilon: float = DEFAULT_EPSILON,
-    max_workers: int = 32,
-) -> DatasetScanResult:
-    """Convenience function to scan FASDD_CV dataset."""
-    scanner = DatasetScanner(epsilon=epsilon, max_workers=max_workers)
-    return scanner.scan_fasdd_cv(root_path, validate_images=validate_images)
 
 
 def scan_dataset(

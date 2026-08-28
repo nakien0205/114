@@ -1,0 +1,42 @@
+{
+  "model": "D:\\Python\\Projects\\114\\runs\\train\\yolov8n_p2_home_fire\\weights\\best.pt",
+  "data_config": "D:\\Python\\Projects\\114\\data.yaml",
+  "device": "0",
+  "splits_evaluated": [
+    "test"
+  ],
+  "results": {
+    "test": {
+      "split": "test",
+      "overall": {
+        "precision": 0.69342,
+        "recall": 0.18699,
+        "map50": 0.43904,
+        "map50_95": 0.2174,
+        "fitness": 0.2174
+      },
+      "per_class": {
+        "fire": {
+          "precision": 0.65,
+          "recall": 0.33333,
+          "map50": 0.4901,
+          "map50_95": 0.25209
+        },
+        "smoke": {
+          "precision": 0.73684,
+          "recall": 0.04064,
+          "map50": 0.38799,
+          "map50_95": 0.18272
+        }
+      },
+      "speed_ms": {
+        "preprocess": 1.177,
+        "inference": 2.703,
+        "loss": 0.001,
+        "postprocess": 0.602,
+        "total": 4.482,
+        "fps": 223.11
+      }
+    }
+  }
+}

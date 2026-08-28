@@ -188,7 +188,7 @@ class DatasetVerifier:
         if candidate.exists():
             return candidate
 
-        # Default fallback for Home Fire Dataset / YOLO standard
+        # Default fallback for the standard YOLO layout
         if img_path.parent.name == "images":
             return img_path.parent.parent / "labels" / f"{img_path.stem}.txt"
         if "images" in parts:

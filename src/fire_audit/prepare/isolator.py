@@ -1,25 +1,17 @@
-"""
-Dataset isolator module for strict test set isolation.
-Consolidates Home Fire Dataset frames exclusively into the held-out test split,
-ensuring zero test leakage into training or validation partitions.
-"""
+"""Dataset isolator for strict test-set isolation across arbitrary datasets."""
 
 from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set
 
 from src.fire_audit.config import (
     DEFAULT_EPSILON,
-    HOME_FIRE_DIR_NAME,
-    VALID_IMAGE_EXTENSIONS,
-    DatasetScanResult,
     ImageRecord,
 )
-from src.fire_audit.audit.scanner import DatasetScanner, scan_home_fire_dataset
-from src.fire_audit.audit.validator import validate_image_file
+from src.fire_audit.audit.scanner import DatasetScanner
 
 
 def compute_file_sha256(path: Path) -> str:
@@ -61,9 +53,9 @@ class IsolationResult:
 
 class DatasetIsolator:
     """
-    Consolidates all images/labels from Home Fire Dataset into the test partition.
-    Guarantees that 100% of valid Home Fire frames are assigned exclusively to test
-    and 0% leak into training or validation sets.
+    Collects all valid records from a dataset into a held-out test collection.
+    Corrupt records are quarantined and optional SHA-256 hashes can be retained
+    for later cross-split leakage checks.
     """
 
     def __init__(
@@ -75,25 +67,30 @@ class DatasetIsolator:
         self.compute_hashes = compute_hashes
         self.scanner = DatasetScanner(epsilon=epsilon)
 
-    def isolate_home_fire(
+    def isolate_dataset(
         self,
-        home_fire_root: Path,
+        dataset_root: Path,
         validate_images: bool = True,
+        dataset_name: Optional[str] = None,
     ) -> IsolationResult:
         """
-        Isolate all Home Fire Dataset frames into the test partition.
-        Consolidates subdirectories (train, val, test) into a single test collection.
+        Isolate all valid images from a dataset into the test partition.
+        The scanner auto-detects flat and split-based dataset topologies.
         """
+        dataset_root = Path(dataset_root).resolve()
         result = IsolationResult(
-            dataset_name="Home Fire Dataset",
-            root_path=home_fire_root,
+            dataset_name=dataset_name or dataset_root.name,
+            root_path=dataset_root,
         )
 
-        if not home_fire_root.exists():
+        if not dataset_root.exists():
             return result
 
-        # Scan Home Fire Dataset
-        scan_res = self.scanner.scan_home_fire(home_fire_root, validate_images=validate_images)
+        scan_res = self.scanner.scan_dataset(
+            dataset_root,
+            dataset_name=dataset_name or dataset_root.name,
+            validate_images=validate_images,
+        )
 
         # Categorize by original split source
         split_counts: Dict[str, int] = {}
@@ -118,11 +115,11 @@ class DatasetIsolator:
     def isolate_from_records(
         self,
         records: List[ImageRecord],
-        dataset_name: str = "Home Fire Dataset",
+        dataset_name: Optional[str] = None,
     ) -> IsolationResult:
         """Isolate test images directly from pre-scanned ImageRecord objects."""
         result = IsolationResult(
-            dataset_name=dataset_name,
+            dataset_name=dataset_name or (records[0].dataset if records and records[0].dataset else "dataset"),
             root_path=records[0].image_path.parent if records else Path("."),
         )
 
@@ -146,12 +143,17 @@ class DatasetIsolator:
         return result
 
 
-def isolate_home_fire_dataset(
-    home_fire_root: Path,
+def isolate_dataset(
+    dataset_root: Path,
     validate_images: bool = True,
     compute_hashes: bool = False,
     epsilon: float = DEFAULT_EPSILON,
+    dataset_name: Optional[str] = None,
 ) -> IsolationResult:
-    """Convenience function to isolate Home Fire Dataset into test partition."""
+    """Convenience function to isolate any dataset into a test collection."""
     isolator = DatasetIsolator(epsilon=epsilon, compute_hashes=compute_hashes)
-    return isolator.isolate_home_fire(home_fire_root, validate_images=validate_images)
+    return isolator.isolate_dataset(
+        dataset_root,
+        validate_images=validate_images,
+        dataset_name=dataset_name,
+    )

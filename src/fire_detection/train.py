@@ -1,6 +1,6 @@
 """
 Transfer Learning Training Pipeline for YOLOv8-P2 Fire and Smoke Detection.
-Loads pretrained weights from Maritime-SAR YOLOv8-P2 checkpoint and fine-tunes on Home Fire Dataset.
+Loads the pretrained checkpoint and dataset configured in the config.yaml file.
 """
 
 from __future__ import annotations
@@ -18,11 +18,12 @@ import torch
 import yaml
 from ultralytics import YOLO
 
+try:
+    from src.fire_audit.config import get_configured_data_yaml_path, get_training_config
+except ImportError:
+    from fire_audit.config import get_configured_data_yaml_path, get_training_config
+
 logger = logging.getLogger(__name__)
-
-DEFAULT_PRETRAINED_WEIGHTS = r"D:\Python\Projects\Maritime-SAR\best.pt"
-DEFAULT_DATA_YAML = "data.yaml"
-
 
 def _safe_float(val: Any, default: float = 0.0) -> float:
     """Safely convert value to float, defaulting on None, NaN, Inf, or type conversion errors."""
@@ -65,26 +66,26 @@ def validate_checkpoint_architecture(weights_path: Union[str, Path]) -> Dict[str
 
 
 def train_yolo(
-    weights: Union[str, Path] = DEFAULT_PRETRAINED_WEIGHTS,
-    data: Union[str, Path] = DEFAULT_DATA_YAML,
-    epochs: int = 50,
-    batch: int = 16,
-    imgsz: int = 640,
-    lr0: float = 0.01,
-    lrf: float = 0.01,
-    patience: int = 20,
+    weights: Optional[Union[str, Path]] = None,
+    data: Optional[Union[str, Path]] = None,
+    epochs: Optional[int] = None,
+    batch: Optional[int] = None,
+    imgsz: Optional[int] = None,
+    lr0: Optional[float] = None,
+    lrf: Optional[float] = None,
+    patience: Optional[int] = None,
     device: Optional[Union[str, int]] = None,
-    project: str = "runs/train",
-    name: str = "yolov8n_p2_home_fire",
-    workers: int = 4,
-    optimizer: str = "auto",
-    seed: int = 42,
+    project: Optional[str] = None,
+    name: Optional[str] = None,
+    workers: Optional[int] = None,
+    optimizer: Optional[str] = None,
+    seed: Optional[int] = None,
     freeze: Optional[int] = None,
-    save_period: int = -1,
-    exist_ok: bool = True,
-    val: bool = True,
-    amp: bool = True,
-    verbose: bool = True,
+    save_period: Optional[int] = None,
+    exist_ok: Optional[bool] = None,
+    val: Optional[bool] = None,
+    amp: Optional[bool] = None,
+    verbose: Optional[bool] = None,
     extra_train_args: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
@@ -93,6 +94,36 @@ def train_yolo(
     Returns:
         Dict containing training summary, paths to best.pt and last.pt checkpoints, and metrics.
     """
+    settings = get_training_config()
+    weights = weights if weights is not None else settings.get("weights")
+    data = data if data is not None else settings.get("data") or get_configured_data_yaml_path()
+    if weights is None:
+        raise ValueError("Training weights are not configured; set training.weights in the config.yaml")
+    if data is None:
+        raise ValueError("Dataset path is not configured; set data_path in the config.yaml")
+
+    def setting(name: str, value: Any, fallback: Any) -> Any:
+        return value if value is not None else settings.get(name, fallback)
+
+    epochs = setting("epochs", epochs, 50)
+    batch = setting("batch", batch, 16)
+    imgsz = setting("imgsz", imgsz, 640)
+    lr0 = setting("lr0", lr0, 0.01)
+    lrf = setting("lrf", lrf, 0.01)
+    patience = setting("patience", patience, 20)
+    device = setting("device", device, None)
+    project = setting("project", project, "runs/train")
+    name = setting("name", name, "yolov8n")
+    workers = setting("workers", workers, 4)
+    optimizer = setting("optimizer", optimizer, "auto")
+    seed = setting("seed", seed, 42)
+    freeze = setting("freeze", freeze, None)
+    save_period = setting("save_period", save_period, -1)
+    exist_ok = setting("exist_ok", exist_ok, True)
+    val = setting("val", val, True)
+    amp = setting("amp", amp, True)
+    verbose = setting("verbose", verbose, True)
+
     weights_path = Path(weights).resolve()
     data_path = Path(data).resolve()
 
@@ -204,35 +235,30 @@ def build_parser() -> argparse.ArgumentParser:
         prog="train",
         description="Transfer learning training pipeline for YOLOv8-P2 fire and smoke detection",
     )
-    parser.add_argument(
-        "--weights",
-        type=str,
-        default=DEFAULT_PRETRAINED_WEIGHTS,
-        help=f"Path to pretrained YOLOv8-P2 weights (default: {DEFAULT_PRETRAINED_WEIGHTS})",
-    )
+    parser.add_argument("--weights", type=str, default=None, help="Path to pretrained weights (default: config.yaml)")
     parser.add_argument(
         "--data",
         type=str,
-        default=DEFAULT_DATA_YAML,
-        help="Path to dataset YAML config (default: data.yaml)",
+        default=None,
+        help="Path to dataset YAML config (default: data_path from config.yaml)",
     )
-    parser.add_argument("--epochs", type=int, default=50, help="Number of training epochs (default: 50)")
-    parser.add_argument("--batch", "--batch-size", dest="batch", type=int, default=16, help="Batch size (default: 16)")
-    parser.add_argument("--imgsz", "--img-size", dest="imgsz", type=int, default=640, help="Image size (default: 640)")
-    parser.add_argument("--lr0", type=float, default=0.01, help="Initial learning rate (default: 0.01)")
-    parser.add_argument("--lrf", type=float, default=0.01, help="Final learning rate factor (default: 0.01)")
-    parser.add_argument("--patience", type=int, default=20, help="Early stopping patience (default: 20)")
+    parser.add_argument("--epochs", type=int, default=None, help="Number of training epochs (default: config.yaml)")
+    parser.add_argument("--batch", "--batch-size", dest="batch", type=int, default=None, help="Batch size (default: config.yaml)")
+    parser.add_argument("--imgsz", "--img-size", dest="imgsz", type=int, default=None, help="Image size (default: config.yaml)")
+    parser.add_argument("--lr0", type=float, default=None, help="Initial learning rate (default: config.yaml)")
+    parser.add_argument("--lrf", type=float, default=None, help="Final learning rate factor (default: config.yaml)")
+    parser.add_argument("--patience", type=int, default=None, help="Early stopping patience (default: config.yaml)")
     parser.add_argument(
         "--device",
         type=str,
         default=None,
         help="Device to run training on, e.g. 0, cuda:0, cpu (default: auto cuda/cpu)",
     )
-    parser.add_argument("--project", type=str, default="runs/train", help="Project save directory (default: runs/train)")
-    parser.add_argument("--name", type=str, default="yolov8n_p2_home_fire", help="Experiment name (default: yolov8n_p2_home_fire)")
-    parser.add_argument("--workers", type=int, default=4, help="Dataloader worker threads (default: 4)")
-    parser.add_argument("--optimizer", type=str, default="auto", help="Optimizer choice (default: auto)")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility (default: 42)")
+    parser.add_argument("--project", type=str, default=None, help="Project save directory (default: config.yaml)")
+    parser.add_argument("--name", type=str, default=None, help="Experiment name (default: config.yaml)")
+    parser.add_argument("--workers", type=int, default=None, help="Dataloader worker threads (default: config.yaml)")
+    parser.add_argument("--optimizer", type=str, default=None, help="Optimizer choice (default: config.yaml)")
+    parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility (default: config.yaml)")
     parser.add_argument("--freeze", type=int, default=None, help="Number of layers to freeze (optional)")
     parser.add_argument("--json-out", type=str, default=None, help="Optional path to output summary JSON")
     return parser

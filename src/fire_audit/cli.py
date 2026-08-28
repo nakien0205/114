@@ -14,17 +14,15 @@ from typing import Any, Dict, List, Optional, Union
 
 try:
     from src.fire_audit.config import (
-        DEFAULT_DATA_ROOT,
         DEFAULT_EPSILON,
-        FASDD_CV_DIR_NAME,
-        HOME_FIRE_DIR_NAME,
+        get_configured_data_root,
+        MANIFEST_DIR_NAME,
+        SPLITS_DIR_NAME,
         SegmentationConfig,
         SegmentationResult,
     )
     from src.fire_audit.audit.scanner import (
         DatasetScanner,
-        scan_fasdd_cv_dataset,
-        scan_home_fire_dataset,
     )
     from src.fire_audit.audit.stats import calculate_dataset_stats
     from src.fire_audit.audit.reporter import (
@@ -33,12 +31,13 @@ try:
     )
     from src.fire_audit.segment.engine import VideoSegmentationEngine
     from src.fire_audit.segment.manifest_writer import ManifestWriter
-    from src.fire_audit.prepare.isolator import isolate_home_fire_dataset
     from src.fire_audit.prepare.partitioner import partition_dataset_by_sequence
     from src.fire_audit.prepare.manifest import (
         DataPreparer,
         ManifestGenerator,
+        dataset_artifact_root,
         prepare_pipeline_datasets,
+        resolve_dataset_roots,
     )
     from src.fire_audit.verify.verifier import (
         DatasetVerifier,
@@ -48,17 +47,15 @@ try:
     )
 except ImportError:
     from fire_audit.config import (
-        DEFAULT_DATA_ROOT,
         DEFAULT_EPSILON,
-        FASDD_CV_DIR_NAME,
-        HOME_FIRE_DIR_NAME,
+        get_configured_data_root,
+        MANIFEST_DIR_NAME,
+        SPLITS_DIR_NAME,
         SegmentationConfig,
         SegmentationResult,
     )
     from fire_audit.audit.scanner import (
         DatasetScanner,
-        scan_fasdd_cv_dataset,
-        scan_home_fire_dataset,
     )
     from fire_audit.audit.stats import calculate_dataset_stats
     from fire_audit.audit.reporter import (
@@ -67,12 +64,13 @@ except ImportError:
     )
     from fire_audit.segment.engine import VideoSegmentationEngine
     from fire_audit.segment.manifest_writer import ManifestWriter
-    from fire_audit.prepare.isolator import isolate_home_fire_dataset
     from fire_audit.prepare.partitioner import partition_dataset_by_sequence
     from fire_audit.prepare.manifest import (
         DataPreparer,
         ManifestGenerator,
+        dataset_artifact_root,
         prepare_pipeline_datasets,
+        resolve_dataset_roots,
     )
     from fire_audit.verify.verifier import (
         DatasetVerifier,
@@ -82,8 +80,14 @@ except ImportError:
     )
 
 
+def resolve_data_dir(data_dir: Optional[Union[str, Path]]) -> Path:
+    """Resolve a CLI data directory from an explicit value or user config."""
+    configured = get_configured_data_root()
+    return Path(data_dir or configured or Path.cwd()).resolve()
+
+
 def run_audit(
-    data_dir: Path = DEFAULT_DATA_ROOT,
+    data_dir: Optional[Path] = None,
     output_dir: Path = Path("."),
     epsilon: float = DEFAULT_EPSILON,
     validate_images: bool = True,
@@ -93,38 +97,31 @@ def run_audit(
     print("=" * 80)
     print(" PIPELINE STAGE: AUDIT & VALIDATION")
     print("=" * 80)
-    data_dir = Path(data_dir).resolve()
+    data_dir = resolve_data_dir(data_dir)
     output_dir = Path(output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    home_dir = data_dir / HOME_FIRE_DIR_NAME
-    fasdd_dir = data_dir / FASDD_CV_DIR_NAME
-
-    if not home_dir.exists() and (data_dir / "test").exists():
-        home_dir = data_dir
-    if not fasdd_dir.exists() and (data_dir / "images").exists():
-        fasdd_dir = data_dir
-
-    print(f"[*] Scanning Home Fire Dataset from: {home_dir}")
+    dataset_roots = []
+    for root in resolve_dataset_roots(data_dir):
+        if root not in dataset_roots:
+            dataset_roots.append(root)
     scanner = DatasetScanner(epsilon=epsilon)
-    home_scan = scanner.scan_home_fire(home_dir, validate_images=validate_images)
-    print(f"    -> Found {len(home_scan.records):,} records ({len(home_scan.corrupt_images)} corrupt images, {len(home_scan.corrupt_labels)} corrupt labels)")
-
-    print(f"[*] Scanning FASDD_CV from: {fasdd_dir}")
-    fasdd_scan = scanner.scan_fasdd_cv(fasdd_dir, validate_images=validate_images)
-    print(f"    -> Found {len(fasdd_scan.records):,} records ({len(fasdd_scan.corrupt_images)} corrupt images, {len(fasdd_scan.corrupt_labels)} corrupt labels)")
+    scan_results = {}
+    for dataset_root in dataset_roots:
+        dataset_name = dataset_root.name or "dataset"
+        print(f"[*] Scanning {dataset_name} from: {dataset_root}")
+        scan_result = scanner.scan_dataset(
+            dataset_root,
+            dataset_name=dataset_name,
+            validate_images=validate_images,
+        )
+        scan_results[dataset_name] = scan_result
+        print(f"    -> Found {len(scan_result.records):,} records ({len(scan_result.corrupt_images)} corrupt images, {len(scan_result.corrupt_labels)} corrupt labels)")
 
     print("[*] Computing statistical distributions and co-occurrences...")
-    home_stats = calculate_dataset_stats(home_scan)
-    fasdd_stats = calculate_dataset_stats(fasdd_scan)
-
     stats_map = {
-        "Home Fire Dataset": home_stats,
-        "FASDD_CV": fasdd_stats,
-    }
-    scan_results = {
-        "Home Fire Dataset": home_scan,
-        "FASDD_CV": fasdd_scan,
+        name: calculate_dataset_stats(scan_result)
+        for name, scan_result in scan_results.items()
     }
 
     print(f"[*] Writing audit reports to: {output_dir}")
@@ -134,38 +131,19 @@ def run_audit(
 
     # Collect corrupt / invalid items for manual review
     manual_review_items = []
-    for p in home_scan.corrupt_images:
-        manual_review_items.append({
-            "filename": p.name,
-            "path": str(p).replace("\\", "/"),
-            "reason": "corrupt_image",
-            "severity": "high",
-            "details": "Unreadable or truncated JPEG header",
-        })
-    for p in home_scan.corrupt_labels:
-        manual_review_items.append({
-            "filename": p.name,
-            "path": str(p).replace("\\", "/"),
-            "reason": "corrupt_label",
-            "severity": "high",
-            "details": "Unparseable or out-of-bounds YOLO bounding box",
-        })
-    for p in fasdd_scan.corrupt_images:
-        manual_review_items.append({
-            "filename": p.name,
-            "path": str(p).replace("\\", "/"),
-            "reason": "corrupt_image",
-            "severity": "high",
-            "details": "Unreadable or truncated JPEG header",
-        })
-    for p in fasdd_scan.corrupt_labels:
-        manual_review_items.append({
-            "filename": p.name,
-            "path": str(p).replace("\\", "/"),
-            "reason": "corrupt_label",
-            "severity": "high",
-            "details": "Unparseable or out-of-bounds YOLO bounding box",
-        })
+    for scan_result in scan_results.values():
+        for reason, paths, details in (
+            ("corrupt_image", scan_result.corrupt_images, "Unreadable or truncated image"),
+            ("corrupt_label", scan_result.corrupt_labels, "Unparseable or out-of-bounds YOLO bounding box"),
+        ):
+            for path in paths:
+                manual_review_items.append({
+                    "filename": path.name,
+                    "path": str(path).replace("\\", "/"),
+                    "reason": reason,
+                    "severity": "high",
+                    "details": details,
+                })
 
     mr_file = manual_review_out or (output_dir / "manual_review_needed.json")
     with open(mr_file, "w", encoding="utf-8") as f:
@@ -175,8 +153,7 @@ def run_audit(
     print("[*] Audit stage completed successfully.\n")
 
     return {
-        "home_stats": home_stats.to_dict(),
-        "fasdd_stats": fasdd_stats.to_dict(),
+        "dataset_stats": {name: stats.to_dict() for name, stats in stats_map.items()},
         "md_path": str(md_path),
         "json_path": str(json_path),
         "manual_review_path": str(mr_file),
@@ -184,7 +161,7 @@ def run_audit(
 
 
 def run_segment(
-    data_dir: Path = DEFAULT_DATA_ROOT,
+    data_dir: Optional[Path] = None,
     output_dir: Path = Path("."),
     dhash_threshold: int = 18,
     min_length: int = 5,
@@ -192,21 +169,19 @@ def run_segment(
     workers: int = 16,
     manual_review_out: Optional[Path] = None,
 ) -> Dict[str, Any]:
-    """Execute video sequence segmentation on FASDD_CV and export manifests."""
+    """Execute video sequence segmentation on one dataset and export manifests."""
     print("=" * 80)
     print(" PIPELINE STAGE: VIDEO SEQUENCE SEGMENTATION & MANIFEST GENERATION")
     print("=" * 80)
-    data_dir = Path(data_dir).resolve()
+    data_dir = resolve_data_dir(data_dir)
     output_dir = Path(output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    fasdd_dir = data_dir / FASDD_CV_DIR_NAME
-    if not fasdd_dir.exists() and (data_dir / "images").exists():
-        fasdd_dir = data_dir
-    elif not fasdd_dir.exists():
-        fasdd_dir = data_dir
+    _, target_dir = resolve_dataset_roots(data_dir)
+    if not target_dir.exists():
+        target_dir = data_dir
 
-    print(f"[*] Input Dataset Directory: {fasdd_dir}")
+    print(f"[*] Input Dataset Directory: {target_dir}")
     print(f"[*] Configuration: min_len={min_length}, dhash_thresh={dhash_threshold}, lookahead_k={lookahead_k}, workers={workers}")
 
     cfg = SegmentationConfig(
@@ -214,30 +189,28 @@ def run_segment(
         dhash_threshold=dhash_threshold,
         lookahead_k=lookahead_k,
         max_workers=workers,
-        dataset_path=fasdd_dir,
+        dataset_path=target_dir,
         output_dir=output_dir,
     )
     engine = VideoSegmentationEngine(config=cfg)
 
     print("[*] Running two-stage segmentation orchestrator...")
-    seg_res = engine.segment_dataset(fasdd_dir)
+    seg_res = engine.segment_dataset(target_dir)
 
     print(f"    -> Total images processed:   {seg_res.total_images:,}")
     print(f"    -> Video frames detected:   {seg_res.video_frames_count:,}")
     print(f"    -> Static images classified: {seg_res.static_images_count:,}")
     print(f"    -> Video sequences created:  {seg_res.total_video_sequences:,}")
 
-    manifests_dir = output_dir / "manifests"
-    manifests_dir.mkdir(parents=True, exist_ok=True)
-    writer = ManifestWriter(dataset_name="FASDD_CV")
-    json_path, csv_path = writer.write_manifests(seg_res, manifests_dir)
-
-    if output_dir != Path("."):
-        try:
-            writer.write_json(seg_res.records, output_dir / "fasdd_cv_manifest.json")
-            writer.write_csv(seg_res.records, output_dir / "fasdd_cv_manifest.csv")
-        except Exception:
-            pass
+    # Keep segmentation metadata alongside the dataset it describes.
+    manifest_dir = dataset_artifact_root(
+        target_dir,
+        output_dir=output_dir,
+        data_dir=data_dir,
+    ) / MANIFEST_DIR_NAME
+    manifest_dir.mkdir(parents=True, exist_ok=True)
+    writer = ManifestWriter(dataset_name=target_dir.name or "dataset")
+    json_path, csv_path = writer.write_manifests(seg_res, manifest_dir)
 
     # Collect borderline / uncertain sequences and corrupt items for manual review
     manual_review_items = []
@@ -273,7 +246,7 @@ def run_segment(
 
 
 def run_prepare(
-    data_dir: Path = DEFAULT_DATA_ROOT,
+    data_dir: Optional[Path] = None,
     output_dir: Path = Path("."),
     train_ratio: float = 0.8,
     seed: int = 42,
@@ -287,7 +260,7 @@ def run_prepare(
     print("=" * 80)
     print(" PIPELINE STAGE: ISOLATION, PARTITIONING & MANIFEST GENERATION")
     print("=" * 80)
-    data_dir = Path(data_dir).resolve()
+    data_dir = resolve_data_dir(data_dir)
     output_dir = Path(output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -310,17 +283,19 @@ def run_prepare(
 
     iso_res, part_res, manifest_summary = preparer.prepare()
 
-    print(f"[+] Isolated {len(iso_res.test_images):,} Home Fire images strictly to test split.")
-    print(f"[+] Partitioned FASDD_CV into {len(part_res.train_images):,} train and {len(part_res.val_images):,} val images.")
+    print(f"[+] Isolated {len(iso_res.test_images):,} holdout images strictly to test split.")
+    print(f"[+] Partitioned {len(part_res.train_images):,} train and {len(part_res.val_images):,} val images.")
     if part_res.video_train_count > 0 or part_res.video_val_count > 0:
         print(f"    (Video frames: {part_res.video_train_count:,} train, {part_res.video_val_count:,} val; Static: {part_res.static_train_count:,} train, {part_res.static_val_count:,} val)")
-    print(f"[+] Generated manifests:")
-    print(f"    • data.yaml:  {manifest_summary.data_yaml_path}")
-    print(f"    • train.txt:  {manifest_summary.splits_dir / 'train.txt'} ({manifest_summary.train_count:,} images)")
-    print(f"    • val.txt:    {manifest_summary.splits_dir / 'val.txt'} ({manifest_summary.val_count:,} images)")
-    print(f"    • test.txt:   {manifest_summary.splits_dir / 'test.txt'} ({manifest_summary.test_count:,} images)")
-    if manifest_summary.manifest_json_path:
-        print(f"    • Manifest:   {manifest_summary.manifest_json_path}")
+    print(f"[+] Generated dataset-local manifests:")
+    summaries = manifest_summary.dataset_summaries or {"dataset": manifest_summary}
+    for dataset_name, summary in summaries.items():
+        print(f"    • {dataset_name} data.yaml: {summary.data_yaml_path}")
+        print(f"      train.txt: {summary.splits_dir / 'train.txt'} ({summary.train_count:,} images)")
+        print(f"      val.txt:   {summary.splits_dir / 'val.txt'} ({summary.val_count:,} images)")
+        print(f"      test.txt:  {summary.splits_dir / 'test.txt'} ({summary.test_count:,} images)")
+        if summary.manifest_json_path:
+            print(f"      manifest:  {summary.manifest_json_path}")
 
     # Quarantined files go to manual review
     manual_review_items = []
@@ -360,6 +335,10 @@ def run_verify(
 
     if data_yaml_path is None:
         data_yaml_path = Path("data.yaml")
+    elif Path(data_yaml_path) == Path("data.yaml") and not Path(data_yaml_path).exists():
+        local_manifest_yaml = Path(MANIFEST_DIR_NAME) / "data.yaml"
+        if local_manifest_yaml.exists():
+            data_yaml_path = local_manifest_yaml
     data_yaml_path = Path(data_yaml_path).resolve()
 
     verifier = DatasetVerifier(tolerance=tolerance)
@@ -385,7 +364,7 @@ def run_verify(
 
 
 def run_all(
-    data_dir: Path = DEFAULT_DATA_ROOT,
+    data_dir: Optional[Path] = None,
     output_dir: Path = Path("."),
     train_ratio: float = 0.8,
     seed: int = 42,
@@ -396,6 +375,7 @@ def run_all(
     manual_review_out: Optional[Path] = None,
 ) -> int:
     """Execute audit -> segment -> prepare -> verify stages end-to-end."""
+    data_dir = resolve_data_dir(data_dir)
     output_dir = Path(output_dir).resolve()
     mr_path = manual_review_out or (output_dir / "manual_review_needed.json")
 
@@ -428,16 +408,26 @@ def run_all(
         manual_review_out=mr_path,
     )
 
-    # 4. Verify
-    data_yaml_path = (output_dir / "data.yaml").resolve()
-    manifest_json_path = (output_dir / "manifests" / "fasdd_cv_manifest.json").resolve()
-    manifest_csv_path = (output_dir / "manifests" / "fasdd_cv_manifest.csv").resolve()
+    # 4. Verify the dataset-local artifacts generated by prepare.
+    resolved_data_dir = Path(data_dir).resolve()
+    _, target_root = resolve_dataset_roots(resolved_data_dir)
+    if not target_root.exists():
+        target_root = resolved_data_dir
+    artifact_root = dataset_artifact_root(
+        target_root,
+        output_dir=output_dir,
+        data_dir=resolved_data_dir,
+    )
+    data_yaml_path = (artifact_root / MANIFEST_DIR_NAME / "data.yaml").resolve()
+    manifest_json_path = (artifact_root / MANIFEST_DIR_NAME / "dataset_manifest.json").resolve()
+    manifest_csv_path = (artifact_root / MANIFEST_DIR_NAME / "dataset_manifest.csv").resolve()
 
     code = run_verify(
         data_yaml_path=data_yaml_path,
         manifest_json=manifest_json_path if manifest_json_path.exists() else None,
         manifest_csv=manifest_csv_path if manifest_csv_path.exists() else None,
         data_dir=data_dir,
+        splits_dir=(artifact_root / SPLITS_DIR_NAME).resolve(),
         tolerance=tolerance,
         check_hashes=check_hashes,
         json_out=json_out,
@@ -460,14 +450,14 @@ def build_parser() -> argparse.ArgumentParser:
     parent_parser.add_argument(
         "--data-dir",
         type=Path,
-        default=DEFAULT_DATA_ROOT,
-        help=f"Root directory containing raw datasets (default: {DEFAULT_DATA_ROOT})",
+        default=None,
+        help="Root directory containing raw datasets (default: data_path from config.yaml)",
     )
     parent_parser.add_argument(
         "--output-dir",
         type=Path,
         default=Path("."),
-        help="Destination directory for reports, manifests, and split files (default: .)",
+        help="Report/output parent; artifacts are grouped under one directory per dataset (default: .)",
     )
     parent_parser.add_argument(
         "--tolerance",
@@ -498,7 +488,7 @@ def build_parser() -> argparse.ArgumentParser:
     segment_parser = subparsers.add_parser(
         "segment",
         parents=[parent_parser],
-        help="Run VideoSegmentationEngine on FASDD_CV and export JSON/CSV manifests",
+        help="Run VideoSegmentationEngine on a dataset and export JSON/CSV manifests",
     )
     segment_parser.add_argument(
         "--dhash-threshold",
@@ -529,13 +519,13 @@ def build_parser() -> argparse.ArgumentParser:
     prep_parser = subparsers.add_parser(
         "prepare",
         parents=[parent_parser],
-        help="Isolate Home Fire into test, partition FASDD_CV, and generate data.yaml and split files",
+        help="Create a held-out test split, partition a dataset, and generate manifests",
     )
     prep_parser.add_argument(
         "--train-ratio",
         type=float,
         default=0.8,
-        help="Proportion of training sequences for FASDD_CV (default: 0.8)",
+        help="Proportion of training sequences (default: 0.8)",
     )
     prep_parser.add_argument(
         "--seed",
@@ -569,13 +559,13 @@ def build_parser() -> argparse.ArgumentParser:
         "--manifest-json",
         type=Path,
         default=None,
-        help="Path to fasdd_cv_manifest.json (optional)",
+        help="Path to dataset_manifest.json (optional)",
     )
     verify_parser.add_argument(
         "--manifest-csv",
         type=Path,
         default=None,
-        help="Path to fasdd_cv_manifest.csv (optional)",
+        help="Path to dataset_manifest.csv (optional)",
     )
     verify_parser.add_argument(
         "--data-dir",
@@ -623,7 +613,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--train-ratio",
         type=float,
         default=0.8,
-        help="Proportion of training sequences for FASDD_CV (default: 0.8)",
+        help="Proportion of training sequences (default: 0.8)",
     )
     all_parser.add_argument(
         "--seed",
