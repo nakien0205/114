@@ -1,5 +1,5 @@
 """
-Transfer Learning Training Pipeline for YOLOv8-P2 Fire and Smoke Detection.
+Transfer Learning Training Pipeline for Fire and Smoke Detection.
 Loads the pretrained checkpoint and dataset configured in the config.yaml file.
 """
 
@@ -8,14 +8,12 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 import torch
-import yaml
 from ultralytics import YOLO
 
 try:
@@ -39,7 +37,7 @@ def _safe_float(val: Any, default: float = 0.0) -> float:
 
 
 def validate_checkpoint_architecture(weights_path: Union[str, Path]) -> Dict[str, Any]:
-    """Inspect and validate pretrained YOLOv8-P2 checkpoint."""
+    """Inspect and validate pretrained YOLO checkpoint."""
     p = Path(weights_path).resolve()
     if not p.is_file():
         raise FileNotFoundError(f"Pretrained weights checkpoint not found: {p}")
@@ -89,7 +87,7 @@ def train_yolo(
     extra_train_args: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
-    Run transfer learning fine-tuning using YOLOv8-P2 pretrained weights.
+    Run transfer learning fine-tuning using pretrained weights.
 
     Returns:
         Dict containing training summary, paths to best.pt and last.pt checkpoints, and metrics.
@@ -108,14 +106,14 @@ def train_yolo(
     epochs = setting("epochs", epochs, 50)
     batch = setting("batch", batch, 16)
     imgsz = setting("imgsz", imgsz, 640)
-    lr0 = setting("lr0", lr0, 0.01)
+    lr0 = setting("lr0", lr0, 0.001)
     lrf = setting("lrf", lrf, 0.01)
-    patience = setting("patience", patience, 20)
-    device = setting("device", device, None)
+    patience = setting("patience", patience, 10)
+    device = setting("device", device, "cuda:0" if torch.cuda.is_available() else "cpu")
     project = setting("project", project, "runs/train")
     name = setting("name", name, "yolov8n")
     workers = setting("workers", workers, 4)
-    optimizer = setting("optimizer", optimizer, "auto")
+    optimizer = setting("optimizer", optimizer, "AdamW")
     seed = setting("seed", seed, 42)
     freeze = setting("freeze", freeze, None)
     save_period = setting("save_period", save_period, -1)
@@ -233,7 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
     """Build CLI parser for model training."""
     parser = argparse.ArgumentParser(
         prog="train",
-        description="Transfer learning training pipeline for YOLOv8-P2 fire and smoke detection",
+        description="Transfer learning training pipeline for fire and smoke detection",
     )
     parser.add_argument("--weights", type=str, default=None, help="Path to pretrained weights (default: config.yaml)")
     parser.add_argument(

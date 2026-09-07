@@ -2,7 +2,7 @@
 # Please change the path to your local machine before running the code.
 path: datasets/DFire
 train: train/images
-val: val/images
+val: valid/images
 test: test/images
 
 nc: 2

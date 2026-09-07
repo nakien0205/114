@@ -62,10 +62,10 @@ Or run individual stages:
 
 ```bash
 # Audit images and annotations
-python run_pipeline.py audit --data-dir "path/to/dataset"
+python run_pipeline.py audit --data-dir "path/to/dataset" --output-dir "path/to/output"
 
 # Segment video frames to prevent data leakage
-python run_pipeline.py segment --data-dir "path/to/dataset"
+python run_pipeline.py segment --data-dir "path/to/dataset" --output-dir "path/to/output"
 
 # Partition into train/val/test splits
 python run_pipeline.py prepare --data-dir "path/to/dataset" --train-ratio 0.8
@@ -88,7 +88,7 @@ python train.py --weights "path/to/pretrained_model.pt" --data data.yaml --epoch
 Evaluate trained weights on validation or test sets:
 
 ```bash
-python evaluate.py --weights "runs/train/model_name/weights/best.pt" --data data.yaml --split test
+python evaluate.py --weights "runs/train/model_name/weights/best.pt" --data data.yaml --split test --out-dir runs/val/eval
 ```
 
 ---

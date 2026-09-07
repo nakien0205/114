@@ -176,11 +176,20 @@ def evaluate_yolo(
     save_json: Optional[Union[str, Path]] = None,
     save_csv: Optional[Union[str, Path]] = None,
     project: str = "runs/val",
-    name: str = "eval",
+    name: str = "eval_test",
     verbose: bool = True,
+    out_dir: Optional[Union[str, Path]] = None,
 ) -> Dict[str, Any]:
     """
     Run evaluation on validation or test split and export quantitative reports.
+
+    Args:
+        out_dir: Optional path identifying the evaluation run. Its final path
+            component is used as the Ultralytics run name (for example,
+            ``runs/val/yolo26n`` uses ``yolo26n``). It does not replace
+            ``project``.
+        project: Root directory for evaluation artifacts and metric reports.
+            Defaults to ``runs/val``.
 
     Returns:
         Dict containing structured evaluation metrics for requested splits.
@@ -215,11 +224,25 @@ def evaluate_yolo(
         device = "0" if torch.cuda.is_available() else "cpu"
     device_str = str(device)
 
+    out_dir_path: Optional[Path] = None
+    eval_name = name
+    if out_dir is not None:
+        out_dir_path = Path(out_dir).expanduser().resolve()
+        if out_dir_path.name:
+            eval_name = out_dir_path.name
+
+    project_path = Path(project).expanduser().resolve()
+    project_path.mkdir(parents=True, exist_ok=True)
+    if save_json is None:
+        save_json = project_path / eval_name / "metrics.json"
+    if save_csv is None:
+        save_csv = project_path / eval_name / "metrics.csv"
+
     logger.info(f"Loading model for evaluation: {weights_path}")
     model = YOLO(str(weights_path))
 
     splits_to_eval = ["val", "test"] if split in ("both", "all") else [split]
-    project_path = str(Path(project).resolve())
+    project_path_str = str(project_path)
     results_payload: Dict[str, Any] = {
         "model": str(weights_path),
         "data_config": str(data_path),
@@ -240,8 +263,8 @@ def evaluate_yolo(
             conf=conf,
             iou=iou,
             device=device_str,
-            project=project_path,
-            name=f"{name}_{s_name}",
+            project=project_path_str,
+            name=f"{eval_name}",
             save_json=False,
             verbose=verbose,
         )
@@ -285,10 +308,28 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--conf", type=float, default=0.25, help="Confidence threshold (default: 0.25)")
     parser.add_argument("--iou", type=float, default=0.6, help="NMS IoU threshold (default: 0.6)")
     parser.add_argument("--device", type=str, default=None, help="Device to run evaluation on (default: auto)")
-    parser.add_argument("--save-json", type=str, default=None, help="Path to save output JSON metrics")
-    parser.add_argument("--save-csv", type=str, default=None, help="Path to save output CSV metrics")
-    parser.add_argument("--project", type=str, default="runs/val", help="Save directory (default: runs/val)")
-    parser.add_argument("--name", type=str, default="eval", help="Evaluation run name (default: eval)")
+    parser.add_argument(
+        "--out-dir",
+        "--out_dir",
+        dest="out_dir",
+        type=str,
+        default=None,
+        help="Path whose final component is used as the evaluation run name (does not replace project)",
+    )
+    parser.add_argument(
+        "--save-json",
+        type=str,
+        default=None,
+        help="Path to save output JSON metrics (defaults to <project>/metrics.json)",
+    )
+    parser.add_argument(
+        "--save-csv",
+        type=str,
+        default=None,
+        help="Path to save output CSV metrics (defaults to <project>/metrics.csv)",
+    )
+    parser.add_argument("--project", type=str, default="runs/val", help="Evaluation project directory (default: runs/val)")
+    parser.add_argument("--name", type=str, default="eval_test", help="Evaluation run name (default: eval_test)")
     return parser
 
 
@@ -313,6 +354,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             save_csv=args.save_csv,
             project=args.project,
             name=args.name,
+            out_dir=args.out_dir,
         )
         return 0
     except Exception as e:

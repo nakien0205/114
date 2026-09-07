@@ -229,6 +229,8 @@ TEST_READY.md
 manual_review_needed.json
 verify_dataset.py
 yolo26n.pt
+yolov8n.pt
+yolo11n.pt
 test_metrics.csv
 DATASET.md
 dataset_audit_report.md
@@ -237,3 +239,4 @@ dataset_report.json
 dataset_verification_report.json
 tests/
 datasets/
+data_preparation.ipynb

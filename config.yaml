@@ -1,25 +1,25 @@
 # Shared runtime configuration for the Fire and Smoke project.
 # Relative paths are resolved from the project directory.
 
-data_path: "datasets/DFire/manifest/data.yaml"
+data_path: "data.yaml"
 
 paths:
   # Source used by infer.py when --source is omitted.
   inference_source: "datasets/DFire/test/images"
 
 training:
-  weights: "path/to/pretrained_weights.pt"
+  weights: "yolo26n.pt"
   epochs: 50
   batch: 16
   imgsz: 640
-  lr0: 0.01
+  lr0: 0.001
   lrf: 0.01
-  patience: 20
-  device: null
+  patience: 15
+  device: cuda:0
   project: "runs/train"
-  name: "fire_smoke"
+  name: "yolo26n"
   workers: 4
-  optimizer: "auto"
+  optimizer: "AdamW"
   seed: 42
   freeze: null
   save_period: -1
