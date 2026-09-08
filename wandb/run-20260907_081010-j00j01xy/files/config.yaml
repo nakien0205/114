@@ -1,0 +1,230 @@
+_wandb:
+    value:
+        cli_version: 0.27.2
+        e:
+            i1vbkje7hj56wa8qbtss4vplbm6f6uab:
+                args:
+                    - --weights
+                    - D:/Python/Projects/Maritime-SAR/best.pt
+                    - --data
+                    - data.yaml
+                    - --epochs
+                    - "50"
+                    - --batch
+                    - "32"
+                    - --imgsz
+                    - "640"
+                    - --workers
+                    - "4"
+                    - --device
+                    - "0"
+                    - --name
+                    - yolov8n_p2_home_fire
+                    - --wandb-project
+                    - home-fire-detection
+                codePath: train.py
+                codePathLocal: train.py
+                cpu_count: 10
+                cpu_count_logical: 16
+                cudaVersion: "13.2"
+                disk:
+                    /:
+                        total: "1000068870144"
+                        used: "900565893120"
+                email: phongkhiem.waseco@gmail.com
+                executable: D:\Python\Projects\Community\.venv\Scripts\python.exe
+                git:
+                    commit: efd557b179578f544f7bf531f8eaed821cd29cc7
+                    remote: https://github.com/nakien0205/114
+                gpu: NVIDIA GeForce RTX 4060 Laptop GPU
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 3072
+                      memoryTotal: "8585740288"
+                      name: NVIDIA GeForce RTX 4060 Laptop GPU
+                      uuid: GPU-f7cd196e-a477-69aa-74ad-9fdeaa3ca39e
+                host: MSI
+                memory:
+                    total: "16868954112"
+                os: Windows-10-10.0.26200-SP0
+                program: D:\Python\Projects\114\train.py
+                python: CPython 3.11.9
+                root: D:\Python\Projects\114
+                startedAt: "2026-09-07T01:10:10.396960Z"
+                writerId: i1vbkje7hj56wa8qbtss4vplbm6f6uab
+        m: []
+        python_version: 3.11.9
+        t:
+            "1":
+                - 1
+                - 41
+            "2":
+                - 1
+                - 41
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.11.9
+            "5": 0.27.2
+            "8":
+                - 3
+            "12": 0.27.2
+            "13": windows-amd64
+        visualize:
+            curves/F1-Confidence(B):
+                panel_config:
+                    fieldSettings:
+                        class: class
+                        x: x
+                        "y": "y"
+                    panelDefId: wandb/area-under-curve/v0
+                    stringSettings:
+                        title: F1-Confidence(B)
+                        x-axis-title: Confidence
+                        y-axis-title: F1
+                    transform:
+                        name: tableWithLeafColNames
+                    userQuery:
+                        queryFields:
+                            - args:
+                                - name: runSets
+                                  value: ${runSets}
+                              fields:
+                                - fields: []
+                                  name: id
+                                - fields: []
+                                  name: name
+                                - fields: []
+                                  name: _defaultColorIndex
+                                - args:
+                                    - name: tableKey
+                                      value: curves/F1-Confidence(B)_table
+                                  fields: []
+                                  name: summaryTable
+                              name: runSets
+                panel_type: Vega2
+            curves/Precision-Confidence(B):
+                panel_config:
+                    fieldSettings:
+                        class: class
+                        x: x
+                        "y": "y"
+                    panelDefId: wandb/area-under-curve/v0
+                    stringSettings:
+                        title: Precision-Confidence(B)
+                        x-axis-title: Confidence
+                        y-axis-title: Precision
+                    transform:
+                        name: tableWithLeafColNames
+                    userQuery:
+                        queryFields:
+                            - args:
+                                - name: runSets
+                                  value: ${runSets}
+                              fields:
+                                - fields: []
+                                  name: id
+                                - fields: []
+                                  name: name
+                                - fields: []
+                                  name: _defaultColorIndex
+                                - args:
+                                    - name: tableKey
+                                      value: curves/Precision-Confidence(B)_table
+                                  fields: []
+                                  name: summaryTable
+                              name: runSets
+                panel_type: Vega2
+            curves/Precision-Recall(B):
+                panel_config:
+                    fieldSettings:
+                        class: class
+                        x: x
+                        "y": "y"
+                    panelDefId: wandb/area-under-curve/v0
+                    stringSettings:
+                        title: Precision-Recall(B)
+                        x-axis-title: Recall
+                        y-axis-title: Precision
+                    transform:
+                        name: tableWithLeafColNames
+                    userQuery:
+                        queryFields:
+                            - args:
+                                - name: runSets
+                                  value: ${runSets}
+                              fields:
+                                - fields: []
+                                  name: id
+                                - fields: []
+                                  name: name
+                                - fields: []
+                                  name: _defaultColorIndex
+                                - args:
+                                    - name: tableKey
+                                      value: curves/Precision-Recall(B)_table
+                                  fields: []
+                                  name: summaryTable
+                              name: runSets
+                panel_type: Vega2
+            curves/Recall-Confidence(B):
+                panel_config:
+                    fieldSettings:
+                        class: class
+                        x: x
+                        "y": "y"
+                    panelDefId: wandb/area-under-curve/v0
+                    stringSettings:
+                        title: Recall-Confidence(B)
+                        x-axis-title: Confidence
+                        y-axis-title: Recall
+                    transform:
+                        name: tableWithLeafColNames
+                    userQuery:
+                        queryFields:
+                            - args:
+                                - name: runSets
+                                  value: ${runSets}
+                              fields:
+                                - fields: []
+                                  name: id
+                                - fields: []
+                                  name: name
+                                - fields: []
+                                  name: _defaultColorIndex
+                                - args:
+                                    - name: tableKey
+                                      value: curves/Recall-Confidence(B)_table
+                                  fields: []
+                                  name: summaryTable
+                              name: runSets
+                panel_type: Vega2
+batch:
+    value: 32
+data:
+    value: D:\Python\Projects\114\data.yaml
+device:
+    value: "0"
+epochs:
+    value: 50
+freeze:
+    value: null
+imgsz:
+    value: 640
+lr0:
+    value: 0.01
+lrf:
+    value: 0.01
+optimizer:
+    value: auto
+patience:
+    value: 20
+seed:
+    value: 42
+weights:
+    value: D:\Python\Projects\Maritime-SAR\best.pt
+workers:
+    value: 4
