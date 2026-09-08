@@ -1,13 +1,13 @@
 """
 Programmatic verification engine for Fire and Smoke Dataset manifests and splits.
 Verifies all Acceptance Criteria (AC1 - AC10) from ORIGINAL_REQUEST:
-- AC1: 100% of FASDD_CV image files are indexed in the manifest with zero unclassified or dropped entries.
-- AC2: Baseline sequence bothFireAndSmoke_CV000000.jpg to bothFireAndSmoke_CV000431.jpg verified as a single contiguous 432-frame video sequence.
+ - AC1: 100% of dataset image files are indexed in the manifest with zero unclassified or dropped entries.
+ - AC2: Every detected video sequence is verified as contiguous.
 - AC3: Every detected video sequence has homogeneous resolution across all constituent frames.
 - AC4: Every detected video sequence maintains strictly contiguous frame indices without unaddressed gaps.
 - AC5: No image is assigned to more than one category or video ID.
 - AC6: Train/validation partitioners enforce video-level isolation: 0% cross-split frame leakage for all video_frame sequences.
-- AC7: Strict Home Fire Dataset isolation in held-out test split (0% overlap with train or val).
+ - AC7: Strict holdout dataset isolation in the test split (0% overlap with train or val).
 - AC8: All bounding boxes in generated sets have valid class IDs (0 for fire, 1 for smoke) and coordinates within [0.0, 1.0].
 - AC9: Valid data.yaml pointing to existing split files on disk and readable image files.
 - AC10: SHA-256 cryptographic disjointness across splits.
@@ -36,10 +36,7 @@ try:
         CLASS_IDS,
         CLASS_MAP,
         CLASS_NAMES,
-        DEFAULT_DATA_ROOT,
         DEFAULT_EPSILON,
-        FASDD_CV_DIR_NAME,
-        HOME_FIRE_DIR_NAME,
         VALID_IMAGE_EXTENSIONS,
         BoundingBox,
     )
@@ -49,10 +46,7 @@ except ImportError:
         CLASS_IDS,
         CLASS_MAP,
         CLASS_NAMES,
-        DEFAULT_DATA_ROOT,
         DEFAULT_EPSILON,
-        FASDD_CV_DIR_NAME,
-        HOME_FIRE_DIR_NAME,
         VALID_IMAGE_EXTENSIONS,
         BoundingBox,
     )
@@ -168,8 +162,6 @@ class VerificationReport:
         "smoke_boxes": 0,
         "negative_frames": 0,
         "corrupt_or_invalid_boxes": 0,
-        "home_fire_isolated_count": 0,
-        "home_fire_leaked_count": 0,
         "manual_review_items_count": 0,
     })
     errors: List[str] = field(default_factory=list)
@@ -278,18 +270,21 @@ class DatasetVerifier:
         resolved_yaml: Optional[Path] = None
         if data_yaml_path is not None:
             resolved_yaml = Path(data_yaml_path).resolve()
-        elif manifest_json_path is None and manifest_csv_path is None and Path("data.yaml").exists():
-            resolved_yaml = Path("data.yaml").resolve()
+        elif manifest_json_path is None and manifest_csv_path is None:
+            for yaml_candidate in (Path("data.yaml"), Path("manifest") / "data.yaml"):
+                if yaml_candidate.exists():
+                    resolved_yaml = yaml_candidate.resolve()
+                    break
 
         resolved_json: Optional[Path] = None
         if manifest_json_path is not None:
             resolved_json = Path(manifest_json_path).resolve()
         elif resolved_yaml is not None:
             candidates = [
-                resolved_yaml.parent / "manifests" / "fasdd_cv_manifest.json",
-                resolved_yaml.parent / "fasdd_cv_manifest.json",
-                Path("manifests/fasdd_cv_manifest.json").resolve(),
-                Path("fasdd_cv_manifest.json").resolve(),
+                resolved_yaml.parent / "dataset_manifest.json",
+                resolved_yaml.parent / "manifest" / "dataset_manifest.json",
+                resolved_yaml.parent.parent / "manifest" / "dataset_manifest.json",
+                Path("manifest/dataset_manifest.json").resolve(),
             ]
             for cand in candidates:
                 if cand.exists():
@@ -301,10 +296,10 @@ class DatasetVerifier:
             resolved_csv = Path(manifest_csv_path).resolve()
         elif resolved_yaml is not None:
             candidates = [
-                resolved_yaml.parent / "manifests" / "fasdd_cv_manifest.csv",
-                resolved_yaml.parent / "fasdd_cv_manifest.csv",
-                Path("manifests/fasdd_cv_manifest.csv").resolve(),
-                Path("fasdd_cv_manifest.csv").resolve(),
+                resolved_yaml.parent / "dataset_manifest.csv",
+                resolved_yaml.parent / "manifest" / "dataset_manifest.csv",
+                resolved_yaml.parent.parent / "manifest" / "dataset_manifest.csv",
+                Path("manifest/dataset_manifest.csv").resolve(),
             ]
             for cand in candidates:
                 if cand.exists():
@@ -521,38 +516,39 @@ class DatasetVerifier:
         report.summary["total_video_sequences"] = len(sequences_map)
 
         # -------------------------------------------------------------------
-        # AC1: 100% FASDD_CV Image Files Indexed in Manifest
+        # AC1: 100% Dataset Image Files Indexed in Manifest
         # -------------------------------------------------------------------
-        target_fasdd_dir: Optional[Path] = None
+        target_images_dir: Optional[Path] = None
         if data_dir is not None:
-            cands = [Path(data_dir) / FASDD_CV_DIR_NAME, Path(data_dir), Path(data_dir) / "images"]
+            data_root = Path(data_dir)
+            cands = [data_root, data_root / "images"]
+            if data_root.is_dir():
+                for child in data_root.iterdir():
+                    if child.is_dir():
+                        cands.extend((child, child / "images"))
             for c in cands:
                 if c.exists() and (c / "images").exists():
-                    target_fasdd_dir = c / "images"
+                    target_images_dir = c / "images"
                     break
                 elif c.exists() and c.is_dir() and any(p.suffix.lower() in VALID_IMAGE_EXTENSIONS for p in c.iterdir()):
-                    target_fasdd_dir = c
+                    target_images_dir = c
                     break
 
-        if target_fasdd_dir is None and split_images["train"]:
+        if target_images_dir is None and split_images["train"]:
             sample_p = split_images["train"][0]
-            if "FASDD_CV" in str(sample_p):
-                cur = sample_p.parent
-                while cur != cur.parent:
-                    if cur.name == "FASDD_CV" and (cur / "images").is_dir():
-                        target_fasdd_dir = cur / "images"
-                        break
-                    elif cur.name == "images" and cur.parent.name == "FASDD_CV":
-                        target_fasdd_dir = cur
-                        break
-                    cur = cur.parent
+            cur = sample_p.parent
+            while cur != cur.parent:
+                if cur.name == "images":
+                    target_images_dir = cur
+                    break
+                cur = cur.parent
 
-        if target_fasdd_dir is None and manifest_records:
+        if target_images_dir is None and manifest_records:
             sample_m_path = Path(manifest_records[0].get("path", ""))
             if sample_m_path.exists():
                 cur = sample_m_path.parent
-                if cur.name == "images" and cur.parent.name == "FASDD_CV":
-                    target_fasdd_dir = cur
+                if cur.name == "images":
+                    target_images_dir = cur
 
         if manifest_records:
             unclassified = [
@@ -568,9 +564,9 @@ class DatasetVerifier:
                     details=f"Unrecognized category: {unc.get('category')}",
                 ))
 
-            if target_fasdd_dir is not None and target_fasdd_dir.exists():
+            if target_images_dir is not None and target_images_dir.exists():
                 disk_files = {
-                    p.name for p in target_fasdd_dir.iterdir()
+                    p.name for p in target_images_dir.iterdir()
                     if p.is_file() and p.suffix.lower() in VALID_IMAGE_EXTENSIONS
                 }
                 manifest_files = {r.get("filename") for r in manifest_records}
@@ -579,10 +575,10 @@ class DatasetVerifier:
                 for m_fn in missing_in_manifest:
                     manual_review_list.append(ManualReviewItem(
                         filename=m_fn,
-                        path=str(target_fasdd_dir / m_fn),
+                        path=str(target_images_dir / m_fn),
                         reason="dropped_from_manifest",
                         severity="high",
-                        details="Present on disk in FASDD_CV but omitted from output manifest",
+                        details="Present on disk but omitted from output manifest",
                     ))
 
                 if unclassified:
@@ -604,7 +600,7 @@ class DatasetVerifier:
                         "AC1",
                         "Dataset Manifest 100% Coverage & Classification",
                         True,
-                        f"100% of {len(disk_files):,} FASDD_CV image files indexed in manifest with zero dropped or unclassified entries",
+                        f"100% of {len(disk_files):,} dataset image files indexed in manifest with zero dropped or unclassified entries",
                     )
             else:
                 if unclassified:
@@ -638,102 +634,26 @@ class DatasetVerifier:
                 )
 
         # -------------------------------------------------------------------
-        # AC2: Baseline Sequence 0..431 Single 432-Frame Video Sequence
+        # AC2: Contiguous Frame Indices Within Each Video Sequence
         # -------------------------------------------------------------------
-        baseline_filenames = [f"bothFireAndSmoke_CV{i:06d}.jpg" for i in range(432)]
-        baseline_frames_in_manifest = [r for r in manifest_records if r.get("filename") in baseline_filenames]
-
-        has_full_baseline_on_disk = False
-        if target_fasdd_dir is not None and (target_fasdd_dir / "bothFireAndSmoke_CV000431.jpg").exists():
-            has_full_baseline_on_disk = True
-
-        if len(baseline_frames_in_manifest) == 432:
-            b_video_ids = {r.get("video_id") for r in baseline_frames_in_manifest}
-            b_categories = {r.get("category") for r in baseline_frames_in_manifest}
-
-            sorted_b_frames = sorted(baseline_frames_in_manifest, key=lambda x: x.get("frame_index") if x.get("frame_index") is not None else -1)
-            indices = [r.get("frame_index") for r in sorted_b_frames]
-            expected_indices = list(range(432))
-
-            frame_432_records = [r for r in manifest_records if r.get("filename") == "bothFireAndSmoke_CV000432.jpg"]
-            frame_432_leaked = False
-            if frame_432_records and len(b_video_ids) == 1:
-                vid = list(b_video_ids)[0]
-                if frame_432_records[0].get("video_id") == vid:
-                    frame_432_leaked = True
-
-            if b_categories != {"video_frame"}:
-                record_check(
-                    "AC2",
-                    "Baseline Video Sequence (0..431)",
-                    False,
-                    f"Baseline sequence frames have invalid category: {b_categories}",
-                )
-            elif len(b_video_ids) != 1 or None in b_video_ids:
-                record_check(
-                    "AC2",
-                    "Baseline Video Sequence (0..431)",
-                    False,
-                    f"Baseline sequence fragmented across multiple video IDs: {b_video_ids}",
-                )
-            elif indices != expected_indices:
-                record_check(
-                    "AC2",
-                    "Baseline Video Sequence (0..431)",
-                    False,
-                    f"Baseline sequence frame indices are non-contiguous: first 5={indices[:5]}, last 5={indices[-5:]}",
-                )
-            elif frame_432_leaked:
-                record_check(
-                    "AC2",
-                    "Baseline Video Sequence (0..431)",
-                    False,
-                    "Frame bothFireAndSmoke_CV000432.jpg incorrectly included in baseline sequence",
-                )
-            else:
-                vid_name = list(b_video_ids)[0]
-                record_check(
-                    "AC2",
-                    "Baseline Video Sequence (0..431)",
-                    True,
-                    f"Baseline sequence bothFireAndSmoke_CV000000.jpg..000431.jpg recognized as single contiguous 432-frame video sequence ({vid_name})",
-                )
-        elif has_full_baseline_on_disk and len(baseline_frames_in_manifest) != 432:
-            record_check(
-                "AC2",
-                "Baseline Video Sequence (0..431)",
-                False,
-                f"Expected 432 baseline frames on disk to be indexed in manifest, found {len(baseline_frames_in_manifest)}",
+        non_contiguous_sequences = []
+        for sequence_id, frames in sequences_map.items():
+            indices = sorted(
+                frame.get("frame_index", -1)
+                for frame in frames
+                if frame.get("frame_index") is not None
             )
-        else:
-            if sequences_map:
-                all_contiguous = True
-                for vid, frames in sequences_map.items():
-                    s_indices = sorted(f.get("frame_index", -1) for f in frames)
-                    if s_indices != list(range(len(frames))):
-                        all_contiguous = False
-                        break
-                if all_contiguous:
-                    record_check(
-                        "AC2",
-                        "Baseline Video Sequence (0..431)",
-                        True,
-                        f"Verified all {len(sequences_map)} video sequences adhere to contiguous 0-indexed sequence structure",
-                    )
-                else:
-                    record_check(
-                        "AC2",
-                        "Baseline Video Sequence (0..431)",
-                        False,
-                        "Non-contiguous sequence detected among video sequences",
-                    )
-            else:
-                record_check(
-                    "AC2",
-                    "Baseline Video Sequence (0..431)",
-                    True,
-                    "Baseline sequence check passed (no video sequence frames in test fixture)",
-                )
+            if indices != list(range(len(indices))):
+                non_contiguous_sequences.append(sequence_id)
+
+        record_check(
+            "AC2",
+            "Contiguous Video Sequence Indices",
+            not non_contiguous_sequences,
+            "All video sequences have contiguous 0-indexed frame indices"
+            if not non_contiguous_sequences
+            else f"Non-contiguous sequence detected: {non_contiguous_sequences[0]}",
+        )
 
         # -------------------------------------------------------------------
         # AC3: Homogeneous Resolution Across Video Frames
@@ -921,41 +841,23 @@ class DatasetVerifier:
                 )
 
         # -------------------------------------------------------------------
-        # AC7: Strict Home Fire Test Set Isolation (Home Fire in test only)
+        # AC7: Test Split Isolation
         # -------------------------------------------------------------------
-        def is_home_fire(p: Path) -> bool:
-            s = str(p).replace("\\", "/")
-            return "Home Fire Dataset" in s or "home_fire" in s.lower() or "homefire" in s.lower()
-
-        train_home_fire = [p for p in split_images["train"] if is_home_fire(p)]
-        val_home_fire = [p for p in split_images["val"] if is_home_fire(p)]
-        test_home_fire = [p for p in split_images["test"] if is_home_fire(p)]
-
-        report.summary["home_fire_isolated_count"] = len(test_home_fire)
-        report.summary["home_fire_leaked_count"] = len(train_home_fire) + len(val_home_fire)
-
-        if train_home_fire or val_home_fire:
-            record_check(
-                "AC7",
-                "Strict Test Set Isolation",
-                False,
-                f"Home Fire Dataset leakage detected: {len(train_home_fire)} in train, {len(val_home_fire)} in val",
-            )
-            for p in train_home_fire + val_home_fire:
-                manual_review_list.append(ManualReviewItem(
-                    filename=p.name,
-                    path=str(p),
-                    reason="home_fire_leakage",
-                    severity="high",
-                    details="Home Fire Dataset image leaked into train or val split",
-                ))
-        else:
-            record_check(
-                "AC7",
-                "Strict Test Set Isolation",
-                True,
-                f"100% Home Fire Dataset frames ({len(test_home_fire)} images) isolated strictly into test split; 0 in train/val",
-            )
+        split_sets = {
+            name: {path.resolve() for path in paths}
+            for name, paths in split_images.items()
+        }
+        train_test_overlap = split_sets["train"].intersection(split_sets["test"])
+        val_test_overlap = split_sets["val"].intersection(split_sets["test"])
+        test_overlap = train_test_overlap.union(val_test_overlap)
+        record_check(
+            "AC7",
+            "Strict Test Set Isolation",
+            not test_overlap,
+            "Test split has no images in train or validation"
+            if not test_overlap
+            else f"Test split overlaps train/validation by {len(test_overlap)} image(s)",
+        )
 
         # -------------------------------------------------------------------
         # AC8: Class IDs and Bounding Box Coordinate Bounds
@@ -1183,7 +1085,7 @@ def print_verification_report(results: Union[VerificationReport, Dict[str, Any]]
     s = data.get("summary", {})
     print(f"  * Train Images:            {s.get('train_images', 0):,}")
     print(f"  * Val Images:              {s.get('val_images', 0):,}")
-    print(f"  * Test Images:             {s.get('test_images', 0):,} (Home Fire: {s.get('home_fire_isolated_count', 0):,})")
+    print(f"  * Test Images:             {s.get('test_images', 0):,}")
     print(f"  * Manifest Video Frames:   {s.get('video_frames_count', 0):,}")
     print(f"  * Manifest Static Images:  {s.get('static_images_count', 0):,}")
     print(f"  * Total Video Sequences:   {s.get('total_video_sequences', 0):,}")

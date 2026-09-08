@@ -1,9 +1,7 @@
 """
 Manifest writer module for serializing video sequence segmentation metadata.
 
-Exports structured manifests in both JSON and CSV formats for downstream consumers:
-- fasdd_cv_manifest.json: Full hierarchical metadata with summary stats and per-frame objects.
-- fasdd_cv_manifest.csv: Flat tabular format compatible with pandas, Excel, and data loaders.
+Exports structured manifests in both JSON and CSV formats for downstream consumers.
 """
 
 from __future__ import annotations
@@ -40,7 +38,7 @@ class ManifestWriter:
         "is_negative",
     ]
 
-    def __init__(self, dataset_name: str = "FASDD_CV") -> None:
+    def __init__(self, dataset_name: str = "dataset") -> None:
         self.dataset_name = dataset_name
 
     def write_json(
@@ -54,7 +52,7 @@ class ManifestWriter:
 
         Schema:
         {
-            "dataset": "FASDD_CV",
+             "dataset": "dataset",
             "total_images": int,
             "summary": {
                 "video_frames": int,
@@ -212,7 +210,7 @@ class ManifestWriter:
         result: SegmentationResult,
         output_dir: Union[Path, str],
         dataset_name: Optional[str] = None,
-        base_name: str = "fasdd_cv_manifest",
+        base_name: str = "dataset_manifest",
     ) -> Tuple[Path, Path]:
         """
         Write dual JSON and CSV manifests for a complete SegmentationResult.
@@ -237,7 +235,7 @@ class ManifestWriter:
 def export_manifest_json(
     records: Sequence[Union[SegmentedFrame, Dict[str, Any]]],
     output_path: Union[Path, str],
-    dataset_name: str = "FASDD_CV",
+    dataset_name: str = "dataset",
 ) -> Path:
     """Convenience function to write a JSON manifest."""
     writer = ManifestWriter(dataset_name=dataset_name)
@@ -256,8 +254,8 @@ def export_manifest_csv(
 def export_manifests(
     result: SegmentationResult,
     output_dir: Union[Path, str],
-    dataset_name: str = "FASDD_CV",
-    base_name: str = "fasdd_cv_manifest",
+    dataset_name: str = "dataset",
+    base_name: str = "dataset_manifest",
 ) -> Tuple[Path, Path]:
     """Convenience function to write dual JSON and CSV manifests from SegmentationResult."""
     writer = ManifestWriter(dataset_name=dataset_name)

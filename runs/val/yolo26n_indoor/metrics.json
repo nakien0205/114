@@ -1,0 +1,42 @@
+{
+  "model": "C:\\Users\\HanDong\\Documents\\Study\\Semester 9\\KLTN\\Fire_and_Smoke_detection\\runs\\train\\yolo26n\\weights\\best.pt",
+  "data_config": "C:\\Users\\HanDong\\Documents\\Study\\Semester 9\\KLTN\\Fire_and_Smoke_detection\\data.yaml",
+  "device": "0",
+  "splits_evaluated": [
+    "test"
+  ],
+  "results": {
+    "test": {
+      "split": "test",
+      "overall": {
+        "precision": 0.50927,
+        "recall": 0.25554,
+        "map50": 0.2097,
+        "map50_95": 0.10709,
+        "fitness": 0.10709
+      },
+      "per_class": {
+        "fire": {
+          "precision": 0.68293,
+          "recall": 0.41405,
+          "map50": 0.36833,
+          "map50_95": 0.19201
+        },
+        "smoke": {
+          "precision": 0.33562,
+          "recall": 0.09703,
+          "map50": 0.05108,
+          "map50_95": 0.02218
+        }
+      },
+      "speed_ms": {
+        "preprocess": 1.225,
+        "inference": 5.301,
+        "loss": 0.0,
+        "postprocess": 0.123,
+        "total": 6.649,
+        "fps": 150.39
+      }
+    }
+  }
+}

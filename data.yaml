@@ -1,6 +1,8 @@
-path: C:/Users/phong/Downloads/Fire/Home Fire Dataset
+# Data.yaml is added to .gitignore to avoid multiple users changing the path to their local machine. 
+# Please change the path to your local machine before running the code.
+path: datasets/DFire
 train: train/images
-val: val/images
+val: valid/images
 test: test/images
 
 nc: 2

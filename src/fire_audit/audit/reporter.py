@@ -98,8 +98,8 @@ class ReportGenerator:
         lines.append("")
 
         lines.append("## 2. Dataset Isolation and Allocation")
-        lines.append("- **Home Fire Dataset**: Strictly isolated as held-out external indoor test set (0% train/val leakage).")
-        lines.append("- **FASDD_CV**: Partitioned into train and validation sets with sequence-level grouping to prevent temporal leakage.")
+        lines.append("- Each dataset is reported independently and keeps its own audit and split artifacts.")
+        lines.append("- Sequence-aware datasets are partitioned at sequence level to prevent temporal leakage.")
         lines.append("")
 
         lines.append("## 3. Class Distribution and Co-occurrence")

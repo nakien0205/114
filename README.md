@@ -29,6 +29,12 @@ The project is organized into two primary packages:
 ├── infer.py             # CLI to run detection inference on images
 ├── run_pipeline.py      # CLI for dataset audit, segmentation, and preparation
 ├── train.py             # CLI to train/fine-tune YOLO models
+├── datasets/            # Multiple datasets (including manifest and split folders), added to .gitignore
+├── runs/
+│   ├── infer/           # Inference results
+│   ├── train/           # Training results
+│   └── val/             # Validation results
+│
 └── src/
     ├── fire_audit/      # Dataset audit, sequence segmentation & partitioning
     └── fire_detection/  # Model training, evaluation & inference routines
@@ -37,6 +43,12 @@ The project is organized into two primary packages:
 ---
 
 ## Getting Started
+
+### Shared Runtime Configuration
+
+Machine-specific dataset and training values are kept in the project-root `config.yaml` file. 
+Edit that file once to set `data_path`, `training.weights`, and the training parameters. 
+The loader also accepts an alternate location through the `CONFIG` environment variable.
 
 ### 1. Dataset Audit and Preparation
 
@@ -50,10 +62,10 @@ Or run individual stages:
 
 ```bash
 # Audit images and annotations
-python run_pipeline.py audit --data-dir "path/to/dataset"
+python run_pipeline.py audit --data-dir "path/to/dataset" --output-dir "path/to/output"
 
 # Segment video frames to prevent data leakage
-python run_pipeline.py segment --data-dir "path/to/dataset"
+python run_pipeline.py segment --data-dir "path/to/dataset" --output-dir "path/to/output"
 
 # Partition into train/val/test splits
 python run_pipeline.py prepare --data-dir "path/to/dataset" --train-ratio 0.8
@@ -66,7 +78,7 @@ python run_pipeline.py prepare --data-dir "path/to/dataset" --train-ratio 0.8
 Fine-tune a YOLO model on the dataset specified in `data.yaml`:
 
 ```bash
-python train.py --weights "path/to/pretrained.pt" --data data.yaml --epochs 50 --batch 16 --imgsz 640
+python train.py --weights "path/to/pretrained_model.pt" --data data.yaml --epochs 50 --batch 16 --imgsz 640
 ```
 
 ---
@@ -76,7 +88,7 @@ python train.py --weights "path/to/pretrained.pt" --data data.yaml --epochs 50 -
 Evaluate trained weights on validation or test sets:
 
 ```bash
-python evaluate.py --weights "runs/train/weights/best.pt" --data data.yaml --split test
+python evaluate.py --weights "runs/train/model_name/weights/best.pt" --data data.yaml --split test --out-dir runs/val/eval
 ```
 
 ---
@@ -86,5 +98,5 @@ python evaluate.py --weights "runs/train/weights/best.pt" --data data.yaml --spl
 Run detection on sample images:
 
 ```bash
-python infer.py --weights "runs/train/weights/best.pt" --source "path/to/images" --output-dir "runs/infer"
+python infer.py --weights "runs/train/model_name/weights/best.pt" --source "path/to/images" --output-dir "runs/infer"
 ```

@@ -4,7 +4,9 @@ Inference and Visual Demonstration CLI for Fire and Smoke Detection.
 Runs object detection model on images and outputs visual bounding boxes with labels and confidences.
 
 Usage:
-    python infer.py --weights runs/train/yolov8n_p2_home_fire/weights/best.pt [--source "C:/Users/phong/Downloads/Fire/Home Fire Dataset/test/images"] [--output-dir runs/infer] [--max-images 20]
+    python infer.py --weights PATH [--source PATH] [--output-dir runs/infer] [--max-images 20]
+
+The default source is loaded from the config.yaml file.
 """
 
 from __future__ import annotations

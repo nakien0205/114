@@ -72,7 +72,7 @@ class VideoSegmentationEngine:
     """
     Automated Video Sequence Segmentation Engine.
 
-    Segments collections of images (such as FASDD_CV) into contiguous video clips
+    Segments collections of images into contiguous video clips
     and isolated static images using a high-throughput two-stage pipeline:
     1. Structural grouping (filename prefix, contiguous integer indexing, identical dimensions).
     2. Perceptual validation (multithreaded 64-bit dHash, k=2 lookahead bridge, temporal coherence).

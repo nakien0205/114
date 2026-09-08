@@ -9,8 +9,6 @@ from src.fire_audit.audit.validator import (
 )
 from src.fire_audit.audit.scanner import (
     DatasetScanner,
-    scan_home_fire_dataset,
-    scan_fasdd_cv_dataset,
     scan_dataset,
 )
 from src.fire_audit.audit.stats import (
@@ -30,8 +28,6 @@ __all__ = [
     "validate_label_file",
     "validate_image_file",
     "DatasetScanner",
-    "scan_home_fire_dataset",
-    "scan_fasdd_cv_dataset",
     "scan_dataset",
     "StatsCalculator",
     "calculate_dataset_stats",
