@@ -24,6 +24,61 @@ DEFAULT_PRETRAINED_WEIGHTS = r"D:\Python\Projects\Maritime-SAR\best.pt"
 DEFAULT_DATA_YAML = "data.yaml"
 
 
+def setup_wandb(env_path: Optional[Union[str, Path]] = None) -> bool:
+    """
+    Load Weights & Biases API key from .env file and authenticate.
+
+    Looks for 'wandb_api' in root .env file, sets WANDB_API_KEY, and calls wandb.login().
+    """
+    if env_path is None:
+        workspace_env = Path.cwd() / ".env"
+        pkg_root_env = Path(__file__).resolve().parent.parent.parent / ".env"
+        env_path = workspace_env if workspace_env.is_file() else pkg_root_env
+
+    env_path = Path(env_path).resolve()
+    api_key = None
+
+    # 1. Try python-dotenv
+    try:
+        import dotenv
+
+        if env_path.is_file():
+            dotenv.load_dotenv(dotenv_path=env_path)
+            api_key = os.getenv("wandb_api")
+    except ImportError:
+        pass
+
+    # 2. Fallback to direct parsing
+    if not api_key and env_path.is_file():
+        try:
+            with open(env_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith("wandb_api="):
+                        api_key = line.split("=", 1)[1].strip().strip('"').strip("'")
+                        break
+        except Exception as e:
+            logger.warning(f"Could not parse {env_path}: {e}")
+
+    # 3. Authenticate with W&B
+    if api_key:
+        os.environ["WANDB_API_KEY"] = api_key
+        try:
+            import wandb
+
+            wandb.login(key=api_key)
+            logger.info("Weights & Biases authenticated successfully using 'wandb_api' from .env")
+            return True
+        except Exception as e:
+            logger.warning(f"Failed to log in to Weights & Biases: {e}")
+            return False
+    else:
+        logger.warning(
+            f"'wandb_api' key not found in {env_path} or environment. Training will proceed without authenticated W&B sync."
+        )
+        return False
+
+
 def _safe_float(val: Any, default: float = 0.0) -> float:
     """Safely convert value to float, defaulting on None, NaN, Inf, or type conversion errors."""
     if val is None:
@@ -86,6 +141,9 @@ def train_yolo(
     amp: bool = True,
     verbose: bool = True,
     extra_train_args: Optional[Dict[str, Any]] = None,
+    wandb_project: Optional[str] = "home-fire-detection",
+    wandb_name: Optional[str] = None,
+    use_wandb: bool = True,
 ) -> Dict[str, Any]:
     """
     Run transfer learning fine-tuning using YOLOv8-P2 pretrained weights.
@@ -141,8 +199,9 @@ def train_yolo(
     # Load model from checkpoint
     model = YOLO(str(weights_path))
 
-    project_path = Path(project).resolve()
-    project_str = str(project_path)
+    # Keep relative or posix format to prevent Windows backslash/colon collisions in WandB logger
+    project_path = Path(project)
+    project_str = project_path.as_posix()
 
     train_kwargs: Dict[str, Any] = {
         "data": str(data_path),
@@ -171,8 +230,54 @@ def train_yolo(
     if extra_train_args:
         train_kwargs.update(extra_train_args)
 
+    # Pre-initialize W&B run if requested and authenticated
+    wandb_run = None
+    if use_wandb:
+        if not os.getenv("WANDB_API_KEY"):
+            setup_wandb()
+        try:
+            import wandb
+
+            if os.getenv("WANDB_MODE") != "disabled" and wandb.run is None and os.getenv("WANDB_API_KEY"):
+                wandb_run = wandb.init(
+                    project=wandb_project or "home-fire-detection",
+                    name=wandb_name or name,
+                    config={
+                        "weights": str(weights_path),
+                        "data": str(data_path),
+                        "epochs": epochs,
+                        "batch": batch,
+                        "imgsz": imgsz,
+                        "lr0": lr0,
+                        "lrf": lrf,
+                        "patience": patience,
+                        "device": device_str,
+                        "workers": workers,
+                        "optimizer": optimizer,
+                        "seed": seed,
+                        "freeze": freeze,
+                    },
+                )
+            elif wandb.run is not None:
+                wandb_run = wandb.run
+        except Exception as e:
+            logger.warning(f"Could not pre-initialize Weights & Biases run: {e}")
+    else:
+        os.environ["WANDB_MODE"] = "disabled"
+
     logger.info(f"Starting fine-tuning with arguments: {train_kwargs}")
-    results = model.train(**train_kwargs)
+    try:
+        results = model.train(**train_kwargs)
+    except Exception:
+        if wandb_run is not None:
+            try:
+                import wandb
+
+                if wandb.run is not None:
+                    wandb.finish(exit_code=1)
+            except Exception:
+                pass
+        raise
 
     # Resolve output checkpoint paths
     save_dir = Path(getattr(model.trainer, "save_dir", Path(project) / name))
@@ -190,6 +295,9 @@ def train_yolo(
         "source_weights": str(weights_path),
         "metrics_summary": {},
     }
+
+    if wandb_run is not None and hasattr(wandb_run, "url"):
+        summary["wandb_url"] = wandb_run.url
 
     if hasattr(results, "results_dict") and isinstance(results.results_dict, dict):
         summary["metrics_summary"] = {k: _safe_float(v) if isinstance(v, (int, float)) else str(v) for k, v in results.results_dict.items()}
@@ -234,6 +342,23 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--optimizer", type=str, default="auto", help="Optimizer choice (default: auto)")
     parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility (default: 42)")
     parser.add_argument("--freeze", type=int, default=None, help="Number of layers to freeze (optional)")
+    parser.add_argument(
+        "--wandb-project",
+        type=str,
+        default="home-fire-detection",
+        help="Weights & Biases project name (default: home-fire-detection)",
+    )
+    parser.add_argument(
+        "--wandb-name",
+        type=str,
+        default=None,
+        help="Weights & Biases run name (default: same as --name)",
+    )
+    parser.add_argument(
+        "--no-wandb",
+        action="store_true",
+        help="Disable Weights & Biases experiment tracking",
+    )
     parser.add_argument("--json-out", type=str, default=None, help="Optional path to output summary JSON")
     return parser
 
@@ -262,6 +387,9 @@ def main(argv: Optional[List[str]] = None) -> int:
             optimizer=args.optimizer,
             seed=args.seed,
             freeze=args.freeze,
+            wandb_project=args.wandb_project,
+            wandb_name=args.wandb_name,
+            use_wandb=not args.no_wandb,
         )
 
         if args.json_out:
