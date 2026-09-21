@@ -8,8 +8,8 @@ paths:
   inference_source: "datasets/DFire/test/images"
 
 training:
-  weights: "yolo26n.pt"
-  epochs: 50
+  weights: "yolo11n.pt"
+  epochs: 200
   batch: 16
   imgsz: 640
   lr0: 0.001
@@ -17,7 +17,7 @@ training:
   patience: 15
   device: cuda:0
   project: "runs/train"
-  name: "yolo26n"
+  name: "yolo11n_nwd"
   workers: 4
   optimizer: "AdamW"
   seed: 42
@@ -25,5 +25,7 @@ training:
   save_period: -1
   exist_ok: true
   val: true
-  amp: true
+  amp: false
   verbose: true
+  nwd_weight: 0.25
+  nwd_constant: 12.8
