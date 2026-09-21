@@ -23,9 +23,6 @@ except ImportError:
     from fire_audit.config import get_configured_data_yaml_path, get_training_config
 
 logger = logging.getLogger(__name__)
-DEFAULT_PRETRAINED_WEIGHTS = r"D:\Python\Projects\Maritime-SAR\best.pt"
-DEFAULT_DATA_YAML = "data.yaml"
-
 
 def setup_wandb(env_path: Optional[Union[str, Path]] = None) -> bool:
     """
