@@ -46,20 +46,6 @@ class NWDBboxLoss(nn.Module):
             else None
         )
 
-    def _check_finite(self,name, x):
-        if not isinstance(x, torch.Tensor):
-            return
-
-        if not torch.isfinite(x).all():
-            bad = x[~torch.isfinite(x)]
-            raise FloatingPointError(
-                f"{name} contains non-finite values. "
-                f"shape={tuple(x.shape)}, "
-                f"dtype={x.dtype}, "
-                f"device={x.device}, "
-                f"sample={bad[:10].detach().cpu()}"
-            )
-
     def forward(
         self,
         pred_dist: torch.Tensor,
@@ -102,11 +88,6 @@ class NWDBboxLoss(nn.Module):
             *args, **kwargs:
                 Keep compatibility with Ultralytics 8.4.x.
         """
-        self._check_finite("pred_dist", pred_dist)
-        self._check_finite("pred_bboxes", pred_bboxes)
-        self._check_finite("target_bboxes", target_bboxes)
-        self._check_finite("target_scores", target_scores)
-        self._check_finite("target_scores_sum", target_scores_sum)
 
         # ==========================================================
         # 1. Positive samples
@@ -140,8 +121,6 @@ class NWDBboxLoss(nn.Module):
             CIoU=True,
         )
 
-        self._check_finite("iou", iou)
-
         ciou_loss = 1.0 - iou
 
         # ==========================================================
@@ -157,8 +136,6 @@ class NWDBboxLoss(nn.Module):
             target_xywh,
             constant=self.nwd_constant,
         )
-
-        self._check_finite("nwd_score", nwd_score)
 
         nwd_regression_loss = (
             1.0 - nwd_score
