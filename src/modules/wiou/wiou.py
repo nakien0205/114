@@ -287,6 +287,8 @@ class WIoU(nn.Module):
             CIoU=False,
         )
 
+        iou = iou.reshape(-1)
+
         iou = iou.clamp(
             min=0.0,
             max=1.0,

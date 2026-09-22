@@ -12,20 +12,20 @@ training:
   epochs: 200
   batch: 16
   imgsz: 640
-  lr0: 0.001
+  lr0: 0.01
   lrf: 0.01
-  patience: 15
+  patience: 20
   device: cuda:0
   project: "runs/train"
-  name: "yolo11n_wiou"
+  name: "yolo11n_wiou_test"
   workers: 4
-  optimizer: "AdamW"
+  optimizer: "MuSGD"
   seed: 42
   freeze: null
   save_period: -1
   exist_ok: true
   val: true
-  amp: false
+  amp: true
   verbose: true
 
   # Custom NWD
