@@ -17,14 +17,28 @@ import numpy as np
 import torch
 from ultralytics import YOLO
 
+from src.modules.nwd.trainer import NWDDetectionTrainer
+from src.modules.wiou.trainer import WIoUDetectionTrainer
+
+
 try:
     from src.fire_audit.config import get_configured_data_yaml_path, get_training_config
 except ImportError:
     from fire_audit.config import get_configured_data_yaml_path, get_training_config
 
 logger = logging.getLogger(__name__)
-DEFAULT_PRETRAINED_WEIGHTS = r"D:\Python\Projects\Maritime-SAR\best.pt"
-DEFAULT_DATA_YAML = "data.yaml"
+
+def check_ultralytics_version():
+    import ultralytics
+
+    actual = ultralytics.__version__
+
+    if actual != "8.4.140":
+        raise RuntimeError(
+            "This NWD implementation targets "
+            "ultralytics==8.4.140, "
+            f"but found {actual}."
+        )
 
 
 def setup_wandb(env_path: Optional[Union[str, Path]] = None) -> bool:
@@ -146,6 +160,22 @@ def train_yolo(
     wandb_project: Optional[str] = "home-fire-detection",
     wandb_name: Optional[str] = None,
     use_wandb: bool = True,
+
+    # ==============================
+    # CUSTOM NWD
+    # ==============================
+    # nwd_weight: Optional[float] = None,
+    # nwd_constant: Optional[float] = None,
+
+    # ==============================
+    # CUSTOM WIoU
+    # ==============================
+    wiou_monotonous: Optional[bool] = None,
+    wiou_alpha: Optional[float] = None,
+    wiou_delta: Optional[float] = None,
+    wiou_momentum: Optional[float] = None,
+    
+    
 ) -> Dict[str, Any]:
     """
     Run transfer learning fine-tuning using pretrained weights.
@@ -153,6 +183,7 @@ def train_yolo(
     Returns:
         Dict containing training summary, paths to best.pt and last.pt checkpoints, and metrics.
     """
+    check_ultralytics_version()
     settings = get_training_config()
     weights = weights if weights is not None else settings.get("weights")
     data = data if data is not None else settings.get("data") or get_configured_data_yaml_path()
@@ -182,6 +213,16 @@ def train_yolo(
     val = setting("val", val, True)
     amp = setting("amp", amp, True)
     verbose = setting("verbose", verbose, True)
+
+    # NWD
+    # nwd_weight = setting("nwd_weight", nwd_weight, 0.25)
+    # nwd_constant = setting("nwd_constant", nwd_constant, 12.8)
+
+    # WIoU
+    wiou_monotonous = setting("wiou_monotonous", wiou_monotonous, False)
+    wiou_alpha = setting("wiou_alpha", wiou_alpha, 1.9)
+    wiou_delta = setting("wiou_delta", wiou_delta, 3.0)
+    wiou_momentum = setting("wiou_momentum", wiou_momentum, 0.01)
 
     weights_path = Path(weights).resolve()
     data_path = Path(data).resolve()
@@ -254,6 +295,22 @@ def train_yolo(
         "val": val,
         "amp": amp,
         "verbose": verbose,
+
+        # ==============================
+        # CUSTOM NWD
+        # ==============================
+        # "trainer": NWDDetectionTrainer,
+        # "nwd_weight": nwd_weight,
+        # "nwd_constant": nwd_constant
+
+        # ==============================
+        # CUSTOM WIoU
+        # ==============================
+        "trainer": WIoUDetectionTrainer,
+        "wiou_monotonous": wiou_monotonous,
+        "wiou_alpha": wiou_alpha,
+        "wiou_delta": wiou_delta,
+        "wiou_momentum": wiou_momentum,
     }
 
     if freeze is not None and freeze > 0:
@@ -387,6 +444,45 @@ def build_parser() -> argparse.ArgumentParser:
         help="Disable Weights & Biases experiment tracking",
     )
     parser.add_argument("--json-out", type=str, default=None, help="Optional path to output summary JSON")
+
+    # Custom NWD arguments
+    # parser.add_argument(
+    #     "--nwd-weight",
+    #     type=float,
+    #     default=0.25,
+    #     help="Weight of NWD in hybrid CIoU+NWD loss",
+    # )
+    # parser.add_argument(
+    #     "--nwd-constant",
+    #     type=float,
+    #     default=12.8,
+    #     help="Normalization constant C used by NWD",
+    # )
+
+    # Custom WIoU arguments
+    parser.add_argument(
+        "--wiou-monotonous",
+        action="store_true",
+        help="Use monotonous WIoU variant",
+    )
+    parser.add_argument(
+        "--wiou-alpha",
+        type=float,
+        default=1.9,
+        help="Alpha parameter for WIoU loss",
+    )
+    parser.add_argument(
+        "--wiou-delta",
+        type=float,
+        default=3.0,
+        help="Delta parameter for WIoU loss",
+    )
+    parser.add_argument(
+        "--wiou-momentum",
+        type=float,
+        default=0.01,
+        help="Momentum parameter for WIoU loss",
+    )
     return parser
 
 
@@ -417,6 +513,18 @@ def main(argv: Optional[List[str]] = None) -> int:
             wandb_project=args.wandb_project,
             wandb_name=args.wandb_name,
             use_wandb=not args.no_wandb,
+
+            #==============================
+            # CUSTOM NWD
+            # nwd_weight=args.nwd_weight,
+            # nwd_constant=args.nwd_constant,
+            
+            #==============================
+            # CUSTOM WIoU
+            wiou_monotonous=args.wiou_monotonous,
+            wiou_alpha=args.wiou_alpha,
+            wiou_delta=args.wiou_delta,
+            wiou_momentum=args.wiou_momentum,
         )
 
         if args.json_out:

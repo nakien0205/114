@@ -19,6 +19,9 @@ The project is organized into two primary packages:
    - **Evaluate**: Evaluates model performance (Precision, Recall, mAP50, mAP50-95).
    - **Infer**: Runs visual object detection inference on test images or directories.
 
+3. **`modules` (`src/modules`)**:
+   - Custom modules for training
+
 ---
 
 ## Directory Structure
@@ -37,12 +40,19 @@ The project is organized into two primary packages:
 │
 └── src/
     ├── fire_audit/      # Dataset audit, sequence segmentation & partitioning
-    └── fire_detection/  # Model training, evaluation & inference routines
+    ├── fire_detection/  # Model training, evaluation & inference routines
+    └── modules/         # Custom bbox loss, detection loss, detection model & trainer
 ```
 
 ---
 
 ## Getting Started
+
+### Dataset
+
+We uses multiple datasets for testing.
+
+Download our training dataset here: https://www.kaggle.com/datasets/dtashton/combined-dataset
 
 ### Shared Runtime Configuration
 
