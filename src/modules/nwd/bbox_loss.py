@@ -108,7 +108,7 @@ class NWDBboxLoss(nn.Module):
         # 2. Target score weights
         # ==========================================================
 
-        weight = target_scores[fg_mask_idx].sum(dim=-1,keepdim=True,)
+        weight = target_scores[fg_mask_idx].sum(dim=-1, keepdim=True)
 
         # ==========================================================
         # 3. CIoU
@@ -121,7 +121,7 @@ class NWDBboxLoss(nn.Module):
             CIoU=True,
         )
 
-        ciou_loss = 1.0 - iou
+        ciou_loss = (1.0 - iou).reshape(-1)
 
         # ==========================================================
         # 4. NWD
@@ -139,7 +139,7 @@ class NWDBboxLoss(nn.Module):
 
         nwd_regression_loss = (
             1.0 - nwd_score
-        )
+        ).reshape(-1)
 
         # ==========================================================
         # 5. Hybrid CIoU + NWD
@@ -168,7 +168,7 @@ class NWDBboxLoss(nn.Module):
         # ==========================================================
 
         loss_iou = (
-            box_loss * weight
+            box_loss.unsqueeze(-1) * weight
         ).sum() / normalizer
 
         # ==========================================================
@@ -198,6 +198,33 @@ class NWDBboxLoss(nn.Module):
                 (),
                 device=pred_dist.device,
                 dtype=pred_dist.dtype,
+            )
+
+        if torch.rand(()) < 0.001:
+            print(
+                "\n[NWD DEBUG]"
+                f"\n  pred_bboxes: min={pred_bboxes.min().item():.4f}, "
+                f"max={pred_bboxes.max().item():.4f}"
+                f"\n  target_bboxes: min={target_bboxes.min().item():.4f}, "
+                f"max={target_bboxes.max().item():.4f}"
+                f"\n  ciou_loss: min={ciou_loss.min().item():.6f}, "
+                f"max={ciou_loss.max().item():.6f}, "
+                f"mean={ciou_loss.mean().item():.6f}"
+                f"\n  nwd_loss: min={nwd_regression_loss.min().item():.6f}, "
+                f"max={nwd_regression_loss.max().item():.6f}, "
+                f"mean={nwd_regression_loss.mean().item():.6f}"
+                f"\n  hybrid_loss: min={box_loss.min().item():.6f}, "
+                f"max={box_loss.max().item():.6f}, "
+                f"mean={box_loss.mean().item():.6f}"
+                f"\n  weight: min={weight.min().item():.6f}, "
+                f"max={weight.max().item():.6f}, "
+                f"mean={weight.mean().item():.6f}"
+                f"\n[SHAPE DEBUG]"
+                f"\n  ciou_loss      : {ciou_loss.shape}"
+                f"\n  nwd_loss       : {nwd_regression_loss.shape}"
+                f"\n  hybrid_loss    : {box_loss.shape}"
+                f"\n  weight         : {weight.shape}"
+                f"\n  raw_dfl        : {loss_dfl.shape}"
             )
 
         return loss_iou, loss_dfl

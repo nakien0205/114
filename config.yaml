@@ -17,9 +17,9 @@ training:
   patience: 20
   device: cuda:0
   project: "runs/train"
-  name: "yolo11n_wiou_test"
+  name: "yolo11n_nwd_test"
   workers: 4
-  optimizer: "MuSGD"
+  optimizer: "auto"
   seed: 42
   freeze: null
   save_period: -1
@@ -29,11 +29,11 @@ training:
   verbose: true
 
   # Custom NWD
-  nwd_weight: 0.25
-  nwd_constant: 12.8
+  nwd-weight: 0.25
+  nwd-constant: 12.8
 
   # Custom WIoU
-  wiou_monotonous: False
-  wiou_alpha: 1.9
-  wiou_delta: 3.0
-  wiou_momentum: 0.01
+  wiou-monotonous: False
+  wiou-alpha: 1.9
+  wiou-delta: 3.0
+  wiou-momentum: 0.01
