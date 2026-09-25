@@ -33,10 +33,9 @@ def check_ultralytics_version():
 
     actual = ultralytics.__version__
 
-    if actual != "8.4.140":
-        raise RuntimeError(
-            "This NWD implementation targets "
-            "ultralytics==8.4.140, "
+    if not actual.startswith("8.4."):
+        logger.warning(
+            "This custom loss implementation targets Ultralytics 8.4.x, "
             f"but found {actual}."
         )
 
@@ -161,11 +160,13 @@ def train_yolo(
     wandb_name: Optional[str] = None,
     use_wandb: bool = True,
 
+    loss: Optional[str] = None,
+
     # ==============================
     # CUSTOM NWD
     # ==============================
-    # nwd_weight: Optional[float] = None,
-    # nwd_constant: Optional[float] = None,
+    nwd_weight: Optional[float] = None,
+    nwd_constant: Optional[float] = None,
 
     # ==============================
     # CUSTOM WIoU
@@ -203,7 +204,9 @@ def train_yolo(
     patience = setting("patience", patience, 10)
     device = setting("device", device, "cuda:0" if torch.cuda.is_available() else "cpu")
     project = setting("project", project, "runs/train")
-    name = setting("name", name, "yolov8n")
+    loss = str(setting("loss", loss, "wiou")).lower()
+    default_name = f"{Path(weights).stem}_{loss}" if weights else f"yolo_{loss}"
+    name = setting("name", name, default_name)
     workers = setting("workers", workers, 4)
     optimizer = setting("optimizer", optimizer, "AdamW")
     seed = setting("seed", seed, 42)
@@ -215,8 +218,8 @@ def train_yolo(
     verbose = setting("verbose", verbose, True)
 
     # NWD
-    # nwd_weight = setting("nwd_weight", nwd_weight, 0.25)
-    # nwd_constant = setting("nwd_constant", nwd_constant, 12.8)
+    nwd_weight = setting("nwd_weight", nwd_weight, 0.25)
+    nwd_constant = setting("nwd_constant", nwd_constant, 12.8)
 
     # WIoU
     wiou_monotonous = setting("wiou_monotonous", wiou_monotonous, False)
@@ -296,22 +299,22 @@ def train_yolo(
         "amp": amp,
         "verbose": verbose,
 
-        # ==============================
-        # CUSTOM NWD
-        # ==============================
-        # "trainer": NWDDetectionTrainer,
-        # "nwd_weight": nwd_weight,
-        # "nwd_constant": nwd_constant
-
-        # ==============================
-        # CUSTOM WIoU
-        # ==============================
-        "trainer": WIoUDetectionTrainer,
-        "wiou_monotonous": wiou_monotonous,
-        "wiou_alpha": wiou_alpha,
-        "wiou_delta": wiou_delta,
-        "wiou_momentum": wiou_momentum,
     }
+
+    if loss == "wiou":
+        train_kwargs["trainer"] = WIoUDetectionTrainer
+        train_kwargs["wiou_monotonous"] = wiou_monotonous
+        train_kwargs["wiou_alpha"] = wiou_alpha
+        train_kwargs["wiou_delta"] = wiou_delta
+        train_kwargs["wiou_momentum"] = wiou_momentum
+    elif loss == "nwd":
+        train_kwargs["trainer"] = NWDDetectionTrainer
+        train_kwargs["nwd_weight"] = nwd_weight
+        train_kwargs["nwd_constant"] = nwd_constant
+    elif loss == "ciou":
+        pass  # Standard Ultralytics trainer default
+    else:
+        raise ValueError(f"Unsupported loss function '{loss}'. Expected 'wiou', 'nwd', or 'ciou'.")
 
     if freeze is not None and freeze > 0:
         train_kwargs["freeze"] = freeze
@@ -445,19 +448,27 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--json-out", type=str, default=None, help="Optional path to output summary JSON")
 
+    parser.add_argument(
+        "--loss",
+        type=str,
+        choices=["wiou", "nwd", "ciou"],
+        default=None,
+        help="Loss function to use during training: wiou, nwd, or ciou (default: config.yaml)",
+    )
+
     # Custom NWD arguments
-    # parser.add_argument(
-    #     "--nwd-weight",
-    #     type=float,
-    #     default=0.25,
-    #     help="Weight of NWD in hybrid CIoU+NWD loss",
-    # )
-    # parser.add_argument(
-    #     "--nwd-constant",
-    #     type=float,
-    #     default=12.8,
-    #     help="Normalization constant C used by NWD",
-    # )
+    parser.add_argument(
+        "--nwd-weight",
+        type=float,
+        default=None,
+        help="Weight of NWD in hybrid CIoU+NWD loss (default: 0.25)",
+    )
+    parser.add_argument(
+        "--nwd-constant",
+        type=float,
+        default=None,
+        help="Normalization constant C used by NWD (default: 12.8)",
+    )
 
     # Custom WIoU arguments
     parser.add_argument(
@@ -514,10 +525,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             wandb_name=args.wandb_name,
             use_wandb=not args.no_wandb,
 
+            loss=args.loss,
+
             #==============================
             # CUSTOM NWD
-            # nwd_weight=args.nwd_weight,
-            # nwd_constant=args.nwd_constant,
+            nwd_weight=args.nwd_weight,
+            nwd_constant=args.nwd_constant,
             
             #==============================
             # CUSTOM WIoU

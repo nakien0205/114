@@ -5,6 +5,8 @@ from ultralytics.nn.tasks import DetectionModel
 from .detection_loss import WIoUDetectionLoss
 
 
+from ultralytics.utils.loss import E2ELoss
+
 class WIoUDetectionModel(DetectionModel):
     """
     DetectionModel with WIoU box regression.
@@ -51,12 +53,24 @@ class WIoUDetectionModel(DetectionModel):
     def init_criterion(self):
         """
         Return the custom WIoU detection criterion.
+        Supports both end-to-end (e.g. YOLO26) and standard YOLO models.
         """
+        if not hasattr(self, "args") or self.args is None:
+            self.args = {}
 
-        return WIoUDetectionLoss(
-            self,
-            wiou_monotonous=self.wiou_monotonous,
-            wiou_alpha=self.wiou_alpha,
-            wiou_delta=self.wiou_delta,
-            wiou_momentum=self.wiou_momentum,
-        )
+        def build_loss(model, tal_topk=10, tal_topk2=None):
+            return WIoUDetectionLoss(
+                model,
+                tal_topk=tal_topk,
+                tal_topk2=tal_topk2,
+                wiou_monotonous=self.wiou_monotonous,
+                wiou_alpha=self.wiou_alpha,
+                wiou_delta=self.wiou_delta,
+                wiou_momentum=self.wiou_momentum,
+            )
+
+        if getattr(self, "end2end", False):
+            return E2ELoss(self, loss_fn=build_loss)
+
+        tal_topk = self.args.get("tal_topk", 10) if isinstance(self.args, dict) else getattr(self.args, "tal_topk", 10)
+        return build_loss(self, tal_topk=tal_topk)
