@@ -1,4 +1,19 @@
 # Change Log
+### 20h00 24/9/2026 - Hân Đồng
+- Train lại yolo26n, yolo26n + P2 trên dataset mới, so sánh performance. Mô hình đc lưu trong `weight/yolo26n_new.pt` và `weight/yolo26n-p2_new.pt`
+- Thử train yolo11n với NWD + CIoU theo trọng số (yolo26 không sử dụng DFL nên thử nghiệm trên yolo11 trước).
+- Xem kết quả so sánh chi tiết trong file `.csv`.
+- Có xây dựng WIoU nhưng bị vẫn còn bị lỗi.
+
+| Model | Precision | Recall | mAP50 | mAP50-95 |
+| --- | --- | --- | --- | --- |
+| 0% NWD |0.839 | **0.767** | 0.835 | 0.517 |
+| 25% NWD |0.841 | 0.761 | 0.837 | **0.521** |
+| 50% NWD |0.845 | 0.757 | 0.838 | 0.52 |
+| 75% NWD |**0.849** | 0.761 | **0.839** | 0.519 |
+| 100% NWD |0.832 | 0.765 | 0.833 | 0.514 |
+
+
 ### 20h00 6/9/2026 - Hân Đồng
 - Train và so sánh 3 model: `yolov8n`, `yolo11n`, `yolo26n` bằng dataset "DFire"
 - Eval `yolo11n` và `yolo26n` bằng dataset "Indoor Fire and Smoke" và "DFS"
@@ -10,7 +25,7 @@ Baseline comparison:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | yolov8n | DFire | 0.63705 | 0.55563 | 0.47418 | 0.24156 | 3.584 | 211.32 |
 | yolo11n | DFire | 0.714 | 0.674 | 0.61 | 0.342 | 3.66 | 208.75 |
-| yolo26n | DFire | **0.72933** | **0.67796** | **0.62782** | **0.36487** | 3.552 | 234.02 |
+| yolo26n | DFire | **0.72933** | **0.67796** | **0.62782** | **0.36487** | **3.552** | **234.02** |
 
 Domain adaptation test:
 

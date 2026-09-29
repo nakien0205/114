@@ -200,31 +200,4 @@ class NWDBboxLoss(nn.Module):
                 dtype=pred_dist.dtype,
             )
 
-        if torch.rand(()) < 0.001:
-            print(
-                "\n[NWD DEBUG]"
-                f"\n  pred_bboxes: min={pred_bboxes.min().item():.4f}, "
-                f"max={pred_bboxes.max().item():.4f}"
-                f"\n  target_bboxes: min={target_bboxes.min().item():.4f}, "
-                f"max={target_bboxes.max().item():.4f}"
-                f"\n  ciou_loss: min={ciou_loss.min().item():.6f}, "
-                f"max={ciou_loss.max().item():.6f}, "
-                f"mean={ciou_loss.mean().item():.6f}"
-                f"\n  nwd_loss: min={nwd_regression_loss.min().item():.6f}, "
-                f"max={nwd_regression_loss.max().item():.6f}, "
-                f"mean={nwd_regression_loss.mean().item():.6f}"
-                f"\n  hybrid_loss: min={box_loss.min().item():.6f}, "
-                f"max={box_loss.max().item():.6f}, "
-                f"mean={box_loss.mean().item():.6f}"
-                f"\n  weight: min={weight.min().item():.6f}, "
-                f"max={weight.max().item():.6f}, "
-                f"mean={weight.mean().item():.6f}"
-                f"\n[SHAPE DEBUG]"
-                f"\n  ciou_loss      : {ciou_loss.shape}"
-                f"\n  nwd_loss       : {nwd_regression_loss.shape}"
-                f"\n  hybrid_loss    : {box_loss.shape}"
-                f"\n  weight         : {weight.shape}"
-                f"\n  raw_dfl        : {loss_dfl.shape}"
-            )
-
         return loss_iou, loss_dfl

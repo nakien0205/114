@@ -1,0 +1,42 @@
+{
+  "model": "C:\\Users\\HanDong\\Documents\\Study\\Semester 9\\KLTN\\Fire_and_Smoke_detection\\weights\\yolo11n_nwd50.pt",
+  "data_config": "C:\\Users\\HanDong\\Documents\\Study\\Semester 9\\KLTN\\Fire_and_Smoke_detection\\data.yaml",
+  "device": "0",
+  "splits_evaluated": [
+    "test"
+  ],
+  "results": {
+    "test": {
+      "split": "test",
+      "overall": {
+        "precision": 0.43567,
+        "recall": 0.3653,
+        "map50": 0.25863,
+        "map50_95": 0.10767,
+        "fitness": 0.10767
+      },
+      "per_class": {
+        "fire": {
+          "precision": 0.54485,
+          "recall": 0.47881,
+          "map50": 0.38259,
+          "map50_95": 0.17333
+        },
+        "smoke": {
+          "precision": 0.32649,
+          "recall": 0.25179,
+          "map50": 0.13468,
+          "map50_95": 0.04201
+        }
+      },
+      "speed_ms": {
+        "preprocess": 1.046,
+        "inference": 2.733,
+        "loss": 0.0,
+        "postprocess": 0.67,
+        "total": 4.45,
+        "fps": 224.74
+      }
+    }
+  }
+}

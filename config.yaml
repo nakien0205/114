@@ -17,7 +17,7 @@ training:
   patience: 20
   device: cuda:0
   project: "runs/train"
-  name: "yolo11n_nwd_test"
+  name: "yolo11n_test_nwd"
   workers: 4
   optimizer: "auto"
   seed: 42

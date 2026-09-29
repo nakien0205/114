@@ -164,8 +164,8 @@ def train_yolo(
     # ==============================
     # CUSTOM NWD
     # ==============================
-    nwd_weight: Optional[float] = None,
-    nwd_constant: Optional[float] = None,
+    # nwd_weight: Optional[float] = None,
+    # nwd_constant: Optional[float] = None,
 
     # ==============================
     # CUSTOM WIoU
@@ -214,9 +214,9 @@ def train_yolo(
     amp = setting("amp", amp, True)
     verbose = setting("verbose", verbose, True)
 
-    # NWD
-    nwd_weight = setting("nwd-weight", nwd_weight, 0.25)
-    nwd_constant = setting("nwd-constant", nwd_constant, 12.8)
+    # # NWD
+    # nwd_weight = setting("nwd-weight", nwd_weight, 0.25)
+    # nwd_constant = setting("nwd-constant", nwd_constant, 12.8)
 
     # WIoU
     # wiou_monotonous = setting("wiou-monotonous", wiou_monotonous, False)
@@ -270,7 +270,7 @@ def train_yolo(
     logger.info(f"Target device: {device_str} (CUDA available: {torch.cuda.is_available()})")
 
     # Load model from checkpoint
-    model = YOLO(str(weights_path))
+    model = YOLO("yolo11-p2.yaml").load(str(weights_path))
 
     # Keep relative or posix format to prevent Windows backslash/colon collisions in WandB logger
     project_path = Path(project)
@@ -299,9 +299,9 @@ def train_yolo(
         # ==============================
         # CUSTOM NWD
         # ==============================
-        "trainer": NWDDetectionTrainer,
-        "nwd_weight": nwd_weight,
-        "nwd_constant": nwd_constant
+        # "trainer": NWDDetectionTrainer,
+        # "nwd_weight": nwd_weight,
+        # "nwd_constant": nwd_constant
 
         # ==============================
         # CUSTOM WIoU
@@ -446,18 +446,18 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--json-out", type=str, default=None, help="Optional path to output summary JSON")
 
     # Custom NWD arguments
-    parser.add_argument(
-        "--nwd-weight",
-        type=float,
-        default=0.25,
-        help="Weight of NWD in hybrid CIoU+NWD loss",
-    )
-    parser.add_argument(
-        "--nwd-constant",
-        type=float,
-        default=12.8,
-        help="Normalization constant C used by NWD",
-    )
+    # parser.add_argument(
+    #     "--nwd-weight",
+    #     type=float,
+    #     default=0.25,
+    #     help="Weight of NWD in hybrid CIoU+NWD loss",
+    # )
+    # parser.add_argument(
+    #     "--nwd-constant",
+    #     type=float,
+    #     default=12.8,
+    #     help="Normalization constant C used by NWD",
+    # )
 
     # Custom WIoU arguments
     # parser.add_argument(
@@ -516,8 +516,8 @@ def main(argv: Optional[List[str]] = None) -> int:
 
             #==============================
             # CUSTOM NWD
-            nwd_weight=args.nwd_weight,
-            nwd_constant=args.nwd_constant,
+            # nwd_weight=args.nwd_weight,
+            # nwd_constant=args.nwd_constant,
             
             #==============================
             # CUSTOM WIoU
