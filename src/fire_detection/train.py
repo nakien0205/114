@@ -18,6 +18,7 @@ import torch
 from ultralytics import YOLO
 
 from src.modules.dwt import register_dwt_modules
+from src.modules.dwt.trainer import DWTDetectionTrainer, DWTNWDDetectionTrainer, DWTWIoUDetectionTrainer
 from src.modules.nwd.trainer import NWDDetectionTrainer
 from src.modules.wiou.trainer import WIoUDetectionTrainer
 
@@ -333,17 +334,18 @@ def train_yolo(
     }
 
     if loss == "wiou":
-        train_kwargs["trainer"] = WIoUDetectionTrainer
+        train_kwargs["trainer"] = DWTWIoUDetectionTrainer if model_choice != "yolo26n" else WIoUDetectionTrainer
         train_kwargs["wiou_monotonous"] = wiou_monotonous
         train_kwargs["wiou_alpha"] = wiou_alpha
         train_kwargs["wiou_delta"] = wiou_delta
         train_kwargs["wiou_momentum"] = wiou_momentum
     elif loss == "nwd":
-        train_kwargs["trainer"] = NWDDetectionTrainer
+        train_kwargs["trainer"] = DWTNWDDetectionTrainer if model_choice != "yolo26n" else NWDDetectionTrainer
         train_kwargs["nwd_weight"] = nwd_weight
         train_kwargs["nwd_constant"] = nwd_constant
     elif loss == "ciou":
-        pass  # Standard Ultralytics trainer default
+        if model_choice != "yolo26n":
+            train_kwargs["trainer"] = DWTDetectionTrainer
     else:
         raise ValueError(f"Unsupported loss function '{loss}'. Expected 'wiou', 'nwd', or 'ciou'.")
 
