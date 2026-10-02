@@ -221,22 +221,15 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Others
-ORIGINAL_REQUEST.md
-PROJECT_REQUIREMENTS.md
-PROJECT.md
-TEST_INFRA.md
-TEST_READY.md
-manual_review_needed.json
-verify_dataset.py
-yolo26n.pt
-yolov8n.pt
-yolo11n.pt
-test_metrics.csv
-DATASET.md
-dataset_audit_report.md
-dataset_audit_report.json
-dataset_report.json
-dataset_verification_report.json
 tests/
 datasets/
-data_preparation.ipynb
+wandb/
+yolo26n.pt
+experiments/
+weights/
+runs/
+papers/
+research/
+active.md
+neck-proposed.md
+new-attention.md

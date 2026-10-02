@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "hypothesis-generation": {
+      "source": "k-dense-ai/scientific-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/hypothesis-generation/SKILL.md",
+      "computedHash": "0d5e55f86d9372f8fa38eadd3d2bcb74ffd123035a89716a7762a28e84beaf6e"
+    },
+    "literature-gap-analysis": {
+      "source": "hideshi/scholarly-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/en/literature-gap-analysis/SKILL.md",
+      "computedHash": "27d684efe6f3200bf4d303046a6b4a04e2efc2409b3d5e5e07278f68d26d70df"
+    },
+    "semanticscholar-skill": {
+      "source": "agents365-ai/365-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/semanticscholar/skills/semanticscholar-skill/SKILL.md",
+      "computedHash": "aaefc936e77f1f6c0cacf3a35eccef3ab8a2eda19518fc43fb7d51ced6434aad"
+    },
+    "statistical-analysis": {
+      "source": "k-dense-ai/scientific-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/statistical-analysis/SKILL.md",
+      "computedHash": "1e7f9894f577e5f03933ef4fec286dd55fa2e85f7e245d5818f59634bef26169"
+    },
+    "systematic-literature-review": {
+      "source": "bytedance/deer-flow",
+      "sourceType": "github",
+      "skillPath": "skills/public/systematic-literature-review/SKILL.md",
+      "computedHash": "a4f42cb232c1b25a971c35c09933a1f26ef5c432439c0c7ca59137d0275cc4c1"
+    }
+  }
+}
