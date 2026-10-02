@@ -1,4 +1,11 @@
 # Change Log
+### 2026-10-02 - Hân Đồng
+Implement Haar DWT YOLO26n backbones:
+- Added reusable Haar `DWTBlock` and trainable `WaveletFusion` modules under `src/modules/dwt/`.
+- Added `DWTBackboneL3` and `DWTBackboneL4`, both returning P3/P4/P5 at strides 8/16/32 with 64/128/256 channels for 640x640 input.
+- Added `models/yolo26n-dwt-l3.yaml` and `models/yolo26n-dwt-l4.yaml`; both retain the stock YOLO26n neck and Detect head.
+- Registered the custom modules with Ultralytics YAML parsing when `src.modules.dwt` is imported.
+
 ### 20h00 6/9/2026 - Hân Đồng
 - Train và so sánh 3 model: `yolov8n`, `yolo11n`, `yolo26n` bằng dataset "DFire"
 - Eval `yolo11n` và `yolo26n` bằng dataset "Indoor Fire and Smoke" và "DFS"

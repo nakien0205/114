@@ -17,6 +17,7 @@ import numpy as np
 import torch
 from ultralytics import YOLO
 
+from src.modules.dwt import register_dwt_modules
 from src.modules.nwd.trainer import NWDDetectionTrainer
 from src.modules.wiou.trainer import WIoUDetectionTrainer
 
@@ -27,6 +28,20 @@ except ImportError:
     from fire_audit.config import get_configured_data_yaml_path, get_training_config
 
 logger = logging.getLogger(__name__)
+
+MODEL_CHOICES = ("yolo26n", "dwt_l3", "dwt_l4")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DWT_MODEL_CONFIGS = {
+    "dwt_l3": PROJECT_ROOT / "models" / "yolo26n-dwt-l3.yaml",
+    "dwt_l4": PROJECT_ROOT / "models" / "yolo26n-dwt-l4.yaml",
+}
+DWT_RUN_NAMES = {
+    "dwt_l3": "yolo26n-dwt-l3",
+    "dwt_l4": "yolo26n-dwt-l4",
+}
+
+# Make DWT layer names available to Ultralytics YAML parsing.
+register_dwt_modules()
 
 def check_ultralytics_version():
     import ultralytics
@@ -175,20 +190,26 @@ def train_yolo(
     wiou_alpha: Optional[float] = None,
     wiou_delta: Optional[float] = None,
     wiou_momentum: Optional[float] = None,
+    model: Optional[str] = None,
     
     
 ) -> Dict[str, Any]:
     """
-    Run transfer learning fine-tuning using pretrained weights.
+    Run training using the selected checkpoint or DWT model YAML.
 
     Returns:
         Dict containing training summary, paths to best.pt and last.pt checkpoints, and metrics.
     """
     check_ultralytics_version()
     settings = get_training_config()
+    model_choice = str(model if model is not None else settings.get("model", "yolo26n")).lower()
+    if model_choice not in MODEL_CHOICES:
+        choices = ", ".join(MODEL_CHOICES)
+        raise ValueError(f"Unsupported model '{model_choice}'. Expected one of: {choices}.")
+
     weights = weights if weights is not None else settings.get("weights")
     data = data if data is not None else settings.get("data") or get_configured_data_yaml_path()
-    if weights is None:
+    if model_choice == "yolo26n" and weights is None:
         raise ValueError("Training weights are not configured; set training.weights in the config.yaml")
     if data is None:
         raise ValueError("Dataset path is not configured; set data_path in the config.yaml")
@@ -205,8 +226,12 @@ def train_yolo(
     device = setting("device", device, "cuda:0" if torch.cuda.is_available() else "cpu")
     project = setting("project", project, "runs/train")
     loss = str(setting("loss", loss, "wiou")).lower()
-    default_name = f"{Path(weights).stem}_{loss}" if weights else f"yolo_{loss}"
-    name = setting("name", name, default_name)
+    if name is None:
+        if model_choice == "yolo26n":
+            default_name = f"{Path(weights).stem}_{loss}" if weights else f"yolo_{loss}"
+            name = settings.get("name", default_name)
+        else:
+            name = DWT_RUN_NAMES[model_choice]
     workers = setting("workers", workers, 4)
     optimizer = setting("optimizer", optimizer, "AdamW")
     seed = setting("seed", seed, 42)
@@ -227,11 +252,16 @@ def train_yolo(
     wiou_delta = setting("wiou_delta", wiou_delta, 3.0)
     wiou_momentum = setting("wiou_momentum", wiou_momentum, 0.01)
 
-    weights_path = Path(weights).resolve()
+    model_path = (
+        Path(weights).resolve()
+        if model_choice == "yolo26n"
+        else DWT_MODEL_CONFIGS[model_choice].resolve()
+    )
     data_path = Path(data).resolve()
 
-    if not weights_path.is_file():
-        raise FileNotFoundError(f"Pretrained weights not found at: {weights_path}")
+    if not model_path.is_file():
+        source_kind = "pretrained weights" if model_choice == "yolo26n" else "model YAML"
+        raise FileNotFoundError(f"{source_kind.capitalize()} not found at: {model_path}")
     if not data_path.is_file():
         raise FileNotFoundError(f"Dataset config YAML not found at: {data_path}")
 
@@ -257,23 +287,24 @@ def train_yolo(
     if freeze is not None and freeze < 0:
         raise ValueError(f"freeze layer count must be non-negative, got {freeze}")
 
-    # Inspect source checkpoint
-    try:
-        validate_checkpoint_architecture(weights_path)
-    except Exception as e:
-        logger.warning(f"Source checkpoint architecture validation note: {e}")
+    # Inspect source checkpoint only for the original pretrained workflow.
+    if model_choice == "yolo26n":
+        try:
+            validate_checkpoint_architecture(model_path)
+        except Exception as e:
+            logger.warning(f"Source checkpoint architecture validation note: {e}")
 
     # Determine execution device
     if device is None:
         device = "0" if torch.cuda.is_available() else "cpu"
     device_str = str(device)
 
-    logger.info(f"Initializing YOLO model from checkpoint: {weights_path}")
+    logger.info(f"Initializing {model_choice} model from: {model_path}")
     logger.info(f"Target dataset configuration: {data_path}")
     logger.info(f"Target device: {device_str} (CUDA available: {torch.cuda.is_available()})")
 
-    # Load model from checkpoint
-    model = YOLO(str(weights_path))
+    # Load the selected checkpoint or model YAML.
+    model = YOLO(str(model_path))
 
     # Keep relative or posix format to prevent Windows backslash/colon collisions in WandB logger
     project_path = Path(project)
@@ -335,7 +366,8 @@ def train_yolo(
                     project=wandb_project or "home-fire-detection",
                     name=wandb_name or name,
                     config={
-                        "weights": str(weights_path),
+                        "model": model_choice,
+                        "weights": str(model_path),
                         "data": str(data_path),
                         "epochs": epochs,
                         "batch": batch,
@@ -384,7 +416,8 @@ def train_yolo(
         "epochs_trained": epochs,
         "device": device_str,
         "data_config": str(data_path),
-        "source_weights": str(weights_path),
+        "model": model_choice,
+        "source_weights": str(model_path),
         "metrics_summary": {},
     }
 
@@ -403,6 +436,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="train",
         description="Transfer learning training pipeline for fire and smoke detection",
+    )
+    parser.add_argument(
+        "--model",
+        choices=MODEL_CHOICES,
+        default=None,
+        help="Model to train: yolo26n uses configured weights; dwt_l3/dwt_l4 use repository YAMLs",
     )
     parser.add_argument("--weights", type=str, default=None, help="Path to pretrained weights (default: config.yaml)")
     parser.add_argument(
@@ -506,6 +545,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     try:
         summary = train_yolo(
+            model=args.model,
             weights=args.weights,
             data=args.data,
             epochs=args.epochs,
