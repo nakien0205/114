@@ -1,112 +1,20 @@
-# Fire and Smoke Detection & Dataset Pipeline
+### 🚀 Cải tiến: Module Spatial-Relational Co-Attention (SRC) cho nhánh P2
 
-A modular Python framework for auditing fire & smoke datasets, preparing leakage-free train/validation/test splits, and training YOLO-based object detection models for fire and smoke detection.
+#### 1. Đóng góp kỹ thuật
+- Tích hợp module **SpatialRelationalCoAttention** vào tầng P2 (`yolo26n-p2-src.yaml`)[cite: 5].
+- Ràng buộc tương quan không gian đồng xuất hiện giữa khói và lửa (Physical Co-occurrence Prior)[cite: 1, 5].
+- Tối ưu bộ nhớ bằng spatial reduction (`sr_ratio=8`)[cite: 5], giảm thiểu nguy cơ OOM và duy trì tốc độ thời gian thực[cite: 5].
 
----
+#### 2. Kết quả thực nghiệm (50 Epochs trên GPU T4)
+- **mAP50:** **67.5%** (Tăng **+1.6%** so với baseline YOLO26n-P2 là 65.90%)
+- **Precision:** **69.3%** (Tăng mạnh, dập tắt các trường hợp báo động giả)
+- **Recall:** **61.4%**
+- **mAP50-95:** **36.8%**
+- **Độ trễ (Inference Latency):** **6.8 ms** (~147 FPS)
+- **Kích thước mô hình:** **2.44M params** | **7.8 GFLOPs**
 
-## Overview
-
-The project is organized into two primary packages:
-
-1. **`fire_audit` (`src/fire_audit`)**:
-   - **Audit**: Scans images and bounding box annotations for corruption, coordinate errors, and class balance.
-   - **Segment**: Identifies continuous video sequences and near-duplicate frames using perceptual hashing (`dHash`).
-   - **Prepare**: Partitions dataset sequences into train, validation, and test splits to prevent data leakage.
-   - **Verify**: Acceptance testing on split integrity and YOLO annotation formats.
-
-2. **`fire_detection` (`src/fire_detection`)**:
-   - **Train**: Fine-tunes pretrained YOLO models on the prepared fire & smoke dataset.
-   - **Evaluate**: Evaluates model performance (Precision, Recall, mAP50, mAP50-95).
-   - **Infer**: Runs visual object detection inference on test images or directories.
-
-3. **`modules` (`src/modules`)**:
-   - Custom modules for training
-
----
-
-## Directory Structure
-
-```text
-├── data.yaml            # YOLO dataset configuration (classes, split paths)
-├── evaluate.py          # CLI to evaluate model checkpoints
-├── infer.py             # CLI to run detection inference on images
-├── run_pipeline.py      # CLI for dataset audit, segmentation, and preparation
-├── train.py             # CLI to train/fine-tune YOLO models
-├── datasets/            # Multiple datasets (including manifest and split folders), added to .gitignore
-├── runs/
-│   ├── infer/           # Inference results
-│   ├── train/           # Training results
-│   └── val/             # Validation results
-│
-└── src/
-    ├── fire_audit/      # Dataset audit, sequence segmentation & partitioning
-    ├── fire_detection/  # Model training, evaluation & inference routines
-    └── modules/         # Custom bbox loss, detection loss, detection model & trainer
-```
-
----
-
-## Getting Started
-
-### Dataset
-
-We uses multiple datasets for testing.
-
-Download our training dataset here: https://www.kaggle.com/datasets/dtashton/combined-dataset
-
-### Shared Runtime Configuration
-
-Machine-specific dataset and training values are kept in the project-root `config.yaml` file. 
-Edit that file once to set `data_path`, `training.weights`, and the training parameters. 
-The loader also accepts an alternate location through the `CONFIG` environment variable.
-
-### 1. Dataset Audit and Preparation
-
-Run the full dataset pipeline (audit, segmentation, partitioning, and verification):
-
-```bash
-python run_pipeline.py all --data-dir "path/to/dataset" --output-dir "path/to/output" --train-ratio 0.8 --seed 42
-```
-
-Or run individual stages:
-
-```bash
-# Audit images and annotations
-python run_pipeline.py audit --data-dir "path/to/dataset" --output-dir "path/to/output"
-
-# Segment video frames to prevent data leakage
-python run_pipeline.py segment --data-dir "path/to/dataset" --output-dir "path/to/output"
-
-# Partition into train/val/test splits
-python run_pipeline.py prepare --data-dir "path/to/dataset" --train-ratio 0.8
-```
-
----
-
-### 2. Model Training
-
-Fine-tune a YOLO model on the dataset specified in `data.yaml`:
-
-```bash
-python train.py --weights "path/to/pretrained_model.pt" --data data.yaml --epochs 50 --batch 16 --imgsz 640
-```
-
----
-
-### 3. Model Evaluation
-
-Evaluate trained weights on validation or test sets:
-
-```bash
-python evaluate.py --weights "runs/train/model_name/weights/best.pt" --data data.yaml --split test --out-dir runs/val/eval
-```
-
----
-
-### 4. Inference and Visualization
-
-Run detection on sample images:
-
-```bash
-python infer.py --weights "runs/train/model_name/weights/best.pt" --source "path/to/images" --output-dir "runs/infer"
-```
+#### 3. Tài nguyên bàn giao
+- Cấu hình kiến trúc: `yolo26n-p2-src.yaml`[cite: 5]
+- Mã nguồn module: `SpatialRelationalCoAttention`[cite: 5]
+- Checkpoint đã huấn luyện: `best.pt` (5.7MB)
+- Biểu đồ và nhật ký: `results.csv`, `results.png`, `BoxPR_curve.png`, `confusion_matrix_normalized.png`

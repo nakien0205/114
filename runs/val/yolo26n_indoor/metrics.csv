@@ -1,4 +1,0 @@
-split,category,precision,recall,map50,map50_95,fitness,inference_ms,fps
-test,all_classes,0.50927,0.25554,0.2097,0.10709,0.10709,5.301,150.39
-test,fire,0.68293,0.41405,0.36833,0.19201,,5.301,150.39
-test,smoke,0.33562,0.09703,0.05108,0.02218,,5.301,150.39
