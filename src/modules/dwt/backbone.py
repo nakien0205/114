@@ -156,5 +156,30 @@ class DWTBackboneL4(_DWTBackboneBase):
 
     levels = 4
 
+# them p2
+class DWTBackboneL3P2(_DWTBackboneBase):
+    """Haar DWT backbone extracting P2 (160x160), P3 (80x80), P4 (40x40), and P5 (20x20)."""
 
-__all__ = ["DWTBlock", "WaveletFusion", "DWTBackboneL3", "DWTBackboneL4"]
+    levels = 3
+
+    def forward(self, x: Tensor) -> tuple[Tensor, Tensor, Tensor, Tensor]:
+        """Return P2, P3, P4, and P5 in neck input order."""
+        x = self.stem(x)
+        
+        # Level 0 -> Stride 2 (320x320)
+        x = self.dwt_levels[0](x)
+        
+        # Level 1 -> Stride 4 (160x160) - TẦNG P2
+        p2 = self.dwt_levels[1](x)
+        
+        # Level 2 -> Stride 8 (80x80) - TẦNG P3
+        p3 = self.dwt_levels[2](p2)
+        
+        # Projection -> P4, P5
+        p4 = self.p4_projection(p3)
+        p5 = self.p5_projection(p4)
+        
+        return p2, p3, p4, p5
+
+# them DWTBackboneL3P2
+__all__ = ["DWTBlock", "WaveletFusion", "DWTBackboneL3", "DWTBackboneL4","DWTBackboneL3P2"]

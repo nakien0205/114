@@ -1,0 +1,46 @@
+# YOLO26n-P2 combining Haar DWT Backbone with Spatial-Relational Co-Attention (SRC)
+nc: 2
+end2end: True
+reg_max: 1
+scale: n
+scales:
+  n: [0.50, 0.25, 1024]
+
+backbone:
+  # Backbone trả về 4 tensor: (P2, P3, P4, P5)
+  - [-1, 1, DWTBackboneL3P2, [3, 64, 128, 256]] # 0
+  - [0, 1, Index, [32, 0]]                      # 1 P2/4  (160x160, 32 channels)
+  - [0, 1, Index, [64, 1]]                      # 2 P3/8  (80x80,  64 channels)
+  - [0, 1, Index, [128, 2]]                     # 3 P4/16 (40x40,  128 channels)
+  - [0, 1, Index, [256, 3]]                     # 4 P5/32 (20x20,  256 channels)
+
+head:
+  # Top-down PANet
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 5 (từ P5/32 -> P4/16)
+  - [[-1, 3], 1, Concat, [1]]                   # 6 Concat với P4 của Backbone
+  - [-1, 2, C3k2, [512, True]]                  # 7
+
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 8 (từ P4/16 -> P3/8)
+  - [[-1, 2], 1, Concat, [1]]                   # 9 Concat với P3 của Backbone
+  - [-1, 2, C3k2, [256, True]]                  # 10
+
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 11 (từ P3/8 -> P2/4: 160x160)
+  - [[-1, 1], 1, Concat, [1]]                   # 12 Concat với P2 của Backbone
+  - [-1, 2, C3k2, [128, True]]                  # 13 Ra 32 channels (scale n = 0.25)
+  - [-1, 1, SpatialRelationalCoAttention, [32, 8, 8]] # 14 TÍCH HỢP SRC (P2 Refined)
+
+  # Bottom-up PANet
+  - [-1, 1, Conv, [128, 3, 2]]                  # 15 Downsample lên P3/8
+  - [[-1, 10], 1, Concat, [1]]                  # 16
+  - [-1, 2, C3k2, [256, True]]                  # 17 (P3 Head)
+
+  - [-1, 1, Conv, [256, 3, 2]]                  # 18 Downsample lên P4/16
+  - [[-1, 7], 1, Concat, [1]]                   # 19
+  - [-1, 2, C3k2, [512, True]]                  # 20 (P4 Head)
+
+  - [-1, 1, Conv, [512, 3, 2]]                  # 21 Downsample lên P5/32
+  - [[-1, 4], 1, Concat, [1]]                   # 22 Concat với P5 của Backbone
+  - [-1, 1, C3k2, [1024, True, 0.5, True]]      # 23 (P5 Head)
+
+  # Detect đón 4 tầng: [P2_SRC, P3, P4, P5]
+  - [[14, 17, 20, 23], 1, Detect, [nc]]         # 24 Detect 4 đầu
