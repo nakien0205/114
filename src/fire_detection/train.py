@@ -226,7 +226,7 @@ def train_yolo(
     patience = setting("patience", patience, 10)
     device = setting("device", device, "cuda:0" if torch.cuda.is_available() else "cpu")
     project = setting("project", project, "runs/train")
-    loss = str(setting("loss", loss, "wiou")).lower()
+    loss = str(setting("loss", loss, "ciou")).lower()
     if name is None:
         if model_choice == "yolo26n":
             default_name = f"{Path(weights).stem}_{loss}" if weights else f"yolo_{loss}"
