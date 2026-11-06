@@ -1,0 +1,7 @@
+# Maintained text uses LF on every platform. Frozen source/results bind exact
+# original bytes and must not pass through Git's newline conversion.
+* text=auto eol=lf
+/experiments/** -text
+/results/** -text
+/configs/experiments/** -text
+/configs/datasets/** -text

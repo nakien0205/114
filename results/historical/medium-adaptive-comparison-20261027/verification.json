@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "CRC_members": 5286,
+  "epochs_1_to_60_finite": true,
+  "labels_verified": 5200,
+  "canonical_GT_verified": 1300,
+  "size_AP_independently_recomputed": true,
+  "matched_recall_independently_recomputed": true,
+  "baseline_predictions_byte_identical_to_original": true,
+  "attached_sources_compared_not_executed": true,
+  "checkpoint_hash_verified_without_deserialization": true,
+  "pycocotools": "2.0.11",
+  "numpy": "2.4.6",
+  "new_training": false,
+  "new_inference": false,
+  "test_access": false,
+  "files": {
+    "audit-output.json.txt": "5fce43ab594abbf8b04db90c4a30e13d35a17ee8e2f1aa6efad1119afa3a6055",
+    "compare.py": "c891b0b13be0237d5d5d1f70d7d406d6fddfff5cf3e35087882a4c99dad1607f",
+    "comparison.csv": "bca0fe74ec1d13986df3eb32d83652157df5371e2abe495881d065aa6381e6e6",
+    "provenance.json": "6ea472b15f5928c8cb6766b05f6f8e83580d81797cd2fc4890e9d4e26b754f92",
+    "report.md": "5c82f936c5ff56de3f3dc9c13cd08036368dad18f35ac828a105e0bf732b5758",
+    "results.json": "4668039899dab013504afc1747809dd77263bdee6c00edc1ff7a96a488c70817"
+  }
+}

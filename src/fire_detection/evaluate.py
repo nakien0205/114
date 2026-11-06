@@ -18,10 +18,7 @@ import numpy as np
 import torch
 from ultralytics import YOLO
 
-try:
-    from src.fire_audit.config import get_configured_data_yaml_path, get_configured_weights_path
-except ImportError:
-    from fire_audit.config import get_configured_data_yaml_path, get_configured_weights_path
+from fire_audit.config import get_configured_data_yaml_path, get_configured_weights_path
 
 logger = logging.getLogger(__name__)
 
@@ -196,11 +193,11 @@ def evaluate_yolo(
     """
     weights = weights if weights is not None else get_configured_weights_path()
     if weights is None:
-        raise ValueError("Evaluation weights are not configured; set training.weights in the config.yaml")
+        raise ValueError("Evaluation weights are not configured; set training.weights in the configs/runtime.yaml")
     weights_path = Path(weights).resolve()
     data = data if data is not None else get_configured_data_yaml_path()
     if data is None:
-        raise ValueError("Dataset path is not configured; set data_path in the config.yaml")
+        raise ValueError("Dataset path is not configured; set data_path in the configs/runtime.yaml")
     data_path = Path(data).resolve()
 
     if not weights_path.is_file():
@@ -300,8 +297,8 @@ def build_parser() -> argparse.ArgumentParser:
         prog="evaluate",
         description="Compute standard object detection metrics (Precision, Recall, mAP50, mAP50-95) on dataset splits",
     )
-    parser.add_argument("--weights", type=str, default=None, help="Path to trained model weights (default: training.weights from config.yaml)")
-    parser.add_argument("--data", type=str, default=None, help="Path to dataset YAML config (default: data_path from config.yaml)")
+    parser.add_argument("--weights", type=str, default=None, help="Path to trained model weights (default: training.weights from configs/runtime.yaml)")
+    parser.add_argument("--data", type=str, default=None, help="Path to dataset YAML config (default: data_path from configs/runtime.yaml)")
     parser.add_argument("--split", type=str, default="test", choices=["val", "test", "train", "both", "all"], help="Split to evaluate (default: test)")
     parser.add_argument("--batch", "--batch-size", dest="batch", type=int, default=16, help="Batch size (default: 16)")
     parser.add_argument("--imgsz", "--img-size", dest="imgsz", type=int, default=640, help="Image size (default: 640)")

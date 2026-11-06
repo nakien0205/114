@@ -31,26 +31,15 @@ from typing import Any, Dict, List, Literal, Optional, Set, Tuple, Union
 
 import yaml
 
-try:
-    from src.fire_audit.config import (
-        CLASS_IDS,
-        CLASS_MAP,
-        CLASS_NAMES,
-        DEFAULT_EPSILON,
-        VALID_IMAGE_EXTENSIONS,
-        BoundingBox,
-    )
-    from src.fire_audit.audit.validator import validate_bbox_line
-except ImportError:
-    from fire_audit.config import (
-        CLASS_IDS,
-        CLASS_MAP,
-        CLASS_NAMES,
-        DEFAULT_EPSILON,
-        VALID_IMAGE_EXTENSIONS,
-        BoundingBox,
-    )
-    from fire_audit.audit.validator import validate_bbox_line
+from fire_audit.config import (
+    CLASS_IDS,
+    CLASS_MAP,
+    CLASS_NAMES,
+    DEFAULT_EPSILON,
+    VALID_IMAGE_EXTENSIONS,
+    BoundingBox,
+)
+from fire_audit.audit.validator import validate_bbox_line
 
 
 def compute_file_sha256(path: Path) -> str:

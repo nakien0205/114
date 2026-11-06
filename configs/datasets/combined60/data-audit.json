@@ -1,0 +1,239 @@
+{
+  "images": 28027,
+  "counts": {
+    "dfire/test": 4306,
+    "dfire/train": 14122,
+    "dfire/val": 3099,
+    "home/test": 1300,
+    "home/train": 3900,
+    "home/val": 1300
+  },
+  "home_orientation_corrections": 30,
+  "zero_area_annotations": 18,
+  "issues": [],
+  "removed_zero_area_train_val_boxes": [
+    {
+      "image": "dfire__AoF05470.jpg",
+      "split": "train",
+      "box_index": 1,
+      "box": [
+        1,
+        0.55859375,
+        0.4666666666666667,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__AoF06155.jpg",
+      "split": "train",
+      "box_index": 1,
+      "box": [
+        1,
+        0.8125,
+        0.3375,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__AoF06348.jpg",
+      "split": "train",
+      "box_index": 1,
+      "box": [
+        1,
+        0.753125,
+        0.25833333333333336,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__AoF06439.jpg",
+      "split": "train",
+      "box_index": 1,
+      "box": [
+        1,
+        0.7125,
+        0.275,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__AoF06456.jpg",
+      "split": "train",
+      "box_index": 1,
+      "box": [
+        1,
+        0.14765625000000002,
+        0.4375,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__PublicDataset00056.jpg",
+      "split": "train",
+      "box_index": 4,
+      "box": [
+        0,
+        0.3296875,
+        0.8152777777777778,
+        0.0,
+        0.002777777777777778
+      ]
+    },
+    {
+      "image": "dfire__WEB04243.jpg",
+      "split": "train",
+      "box_index": 4,
+      "box": [
+        0,
+        0.2685546875,
+        0.41666666666666663,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__WEB04527.jpg",
+      "split": "train",
+      "box_index": 1,
+      "box": [
+        0,
+        0.553,
+        0.7330960854092526,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__WEB04742.jpg",
+      "split": "train",
+      "box_index": 4,
+      "box": [
+        0,
+        0.3875,
+        0.4916666666666667,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__WEB04849.jpg",
+      "split": "train",
+      "box_index": 4,
+      "box": [
+        0,
+        0.1484375,
+        0.4222222222222222,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__WEB05882.jpg",
+      "split": "train",
+      "box_index": 6,
+      "box": [
+        0,
+        0.65625,
+        0.7055555555555556,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__WEB06900.jpg",
+      "split": "train",
+      "box_index": 7,
+      "box": [
+        0,
+        0.8539062500000001,
+        0.23333333333333334,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__WEB07998.jpg",
+      "split": "train",
+      "box_index": 1,
+      "box": [
+        1,
+        0.6468750000000001,
+        0.4715909090909091,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "image": "dfire__WEB08540.jpg",
+      "split": "val",
+      "box_index": 1,
+      "box": [
+        1,
+        0.05871559633027523,
+        0.017291066282420747,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "user_authorization": "2026-11-02: remove 14 zero-area train/validation boxes; preserve every image and every valid box",
+  "out_of_range_annotations": [
+    {
+      "image": "dfire__WEB10769.jpg",
+      "split": "test",
+      "count": 1
+    },
+    {
+      "image": "dfire__WEB10770.jpg",
+      "split": "test",
+      "count": 1
+    },
+    {
+      "image": "dfire__WEB10775.jpg",
+      "split": "test",
+      "count": 1
+    },
+    {
+      "image": "dfire__WEB10821.jpg",
+      "split": "test",
+      "count": 1
+    },
+    {
+      "image": "dfire__WEB11090.jpg",
+      "split": "test",
+      "count": 1
+    },
+    {
+      "image": "dfire__WEB11598.jpg",
+      "split": "test",
+      "count": 1
+    },
+    {
+      "image": "dfire__WEB11600.jpg",
+      "split": "test",
+      "count": 1
+    },
+    {
+      "image": "dfire__WEB11606.jpg",
+      "split": "test",
+      "count": 1
+    }
+  ],
+  "duplicate_groups": [
+    [
+      "test/home__test_1240.jpg",
+      "test/home__test_584.jpg"
+    ],
+    [
+      "test/home__test_696.jpg",
+      "test/home__test_967.jpg"
+    ]
+  ],
+  "cross_split_duplicate_groups": [],
+  "policy": "All images and valid annotations retained; remove 14 authorized zero-area train/val boxes; test coordinates preserved; source splits preserved; fire0 smoke1; no scene grouping; no training"
+}

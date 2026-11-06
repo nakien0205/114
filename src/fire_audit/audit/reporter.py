@@ -8,11 +8,11 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from src.fire_audit.config import (
+from fire_audit.config import (
     DatasetScanResult,
     DatasetStats,
 )
-from src.fire_audit.audit.stats import aggregate_stats
+from fire_audit.audit.stats import aggregate_stats
 
 
 class ReportGenerator:

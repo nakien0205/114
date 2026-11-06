@@ -19,38 +19,21 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
-try:
-    from src.fire_audit.config import (
-        DEFAULT_EPSILON,
-        VALID_IMAGE_EXTENSIONS,
-        SegmentedFrame,
-        SegmentationConfig,
-        SegmentationResult,
-        VideoSequence,
-    )
-    from src.fire_audit.audit.validator import validate_label_file
-    from src.fire_audit.segment.classifier import (
-        compute_aspect_ratio_str,
-        compute_dhashes_parallel,
-        get_image_dimensions,
-        split_into_coherent_segments,
-    )
-except ImportError:
-    from fire_audit.config import (
-        DEFAULT_EPSILON,
-        VALID_IMAGE_EXTENSIONS,
-        SegmentedFrame,
-        SegmentationConfig,
-        SegmentationResult,
-        VideoSequence,
-    )
-    from fire_audit.audit.validator import validate_label_file
-    from fire_audit.segment.classifier import (
-        compute_aspect_ratio_str,
-        compute_dhashes_parallel,
-        get_image_dimensions,
-        split_into_coherent_segments,
-    )
+from fire_audit.config import (
+    DEFAULT_EPSILON,
+    VALID_IMAGE_EXTENSIONS,
+    SegmentedFrame,
+    SegmentationConfig,
+    SegmentationResult,
+    VideoSequence,
+)
+from fire_audit.audit.validator import validate_label_file
+from fire_audit.segment.classifier import (
+    compute_aspect_ratio_str,
+    compute_dhashes_parallel,
+    get_image_dimensions,
+    split_into_coherent_segments,
+)
 
 
 @dataclass

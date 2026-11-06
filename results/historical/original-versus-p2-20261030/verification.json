@@ -1,0 +1,69 @@
+{
+  "archive": "C:\\Users\\phong\\Downloads\\home_fire_original_nm_20261029_183246_595899_results.zip",
+  "archive_sha256": "e206ce01f66dc58e4aeb8da80734eb44a2aecf8e36f7767b0756f0d68184b930",
+  "original_bundle_sha256": "5c00da379b5409e4d20758da831dda80cc564f96f4531b926f7bee2743d80c24",
+  "training_runs": 0,
+  "inference_runs": 0,
+  "checkpoint_loads": 0,
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "pycocotools": "2.0.11",
+  "evaluator_sha256": "741afbb60d5f19ce6425f190e34471c4e91b81d57bfa67a63d4eb9c84bdf611d",
+  "matching_sha256": "b9add4146b0610908e80940cc1aa0c3a57fa7d1738696b94cef2285b3bfd0251",
+  "runs": {
+    "n": {
+      "epochs": 60,
+      "training_args_match_P2": true,
+      "trainer_initialization_audit_passed": true,
+      "COCO_source_hash_verified": true,
+      "checkpoint_sha256": "d22eb5a0918edc2cd21be3d45cfc0d5eebd0a61f465a431f8c04a3e7013b280f",
+      "checkpoint_hash_verified": true,
+      "training_seconds": 6106.733825845001,
+      "comparisons": {
+        "original": {
+          "prediction_hash_verified": true,
+          "canonical_validation_GT_verified": 1300,
+          "size_metrics_reproduced": true,
+          "matched_recall_reproduced": true,
+          "inverted_predictions": 0,
+          "historical_P2_predictions_exact_match": false
+        },
+        "P2": {
+          "prediction_hash_verified": true,
+          "canonical_validation_GT_verified": 1300,
+          "size_metrics_reproduced": true,
+          "matched_recall_reproduced": true,
+          "inverted_predictions": 0,
+          "historical_P2_predictions_exact_match": true
+        }
+      }
+    },
+    "m": {
+      "epochs": 60,
+      "training_args_match_P2": true,
+      "trainer_initialization_audit_passed": true,
+      "COCO_source_hash_verified": true,
+      "checkpoint_sha256": "09c57c1cb33efdd4f746fdbac733daddb469307c35e1bca9df2174f5eb668928",
+      "checkpoint_hash_verified": true,
+      "training_seconds": 12881.588025793999,
+      "comparisons": {
+        "original": {
+          "prediction_hash_verified": true,
+          "canonical_validation_GT_verified": 1300,
+          "size_metrics_reproduced": true,
+          "matched_recall_reproduced": true,
+          "inverted_predictions": 0,
+          "historical_P2_predictions_exact_match": false
+        },
+        "P2": {
+          "prediction_hash_verified": true,
+          "canonical_validation_GT_verified": 1300,
+          "size_metrics_reproduced": true,
+          "matched_recall_reproduced": true,
+          "inverted_predictions": 0,
+          "historical_P2_predictions_exact_match": true
+        }
+      }
+    }
+  },
+  "passed": true
+}

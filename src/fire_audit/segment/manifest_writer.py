@@ -11,10 +11,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
-try:
-    from src.fire_audit.config import SegmentedFrame, SegmentationResult
-except ImportError:
-    from fire_audit.config import SegmentedFrame, SegmentationResult
+from fire_audit.config import SegmentedFrame, SegmentationResult
 
 
 

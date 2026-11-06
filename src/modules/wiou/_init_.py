@@ -1,13 +1,4 @@
-from .wiou import WIoU
-from .bbox_loss import WIoUBboxLoss
-from .detection_loss import WIoUDetectionLoss
-from .model import WIoUDetectionModel
-from .trainer import WIoUDetectionTrainer
-
-__all__ = [
-    "WIoU",
-    "WIoUBboxLoss",
-    "WIoUDetectionLoss",
-    "WIoUDetectionModel",
-    "WIoUDetectionTrainer",
-]
+"""Legacy import path; implementation lives in fire_detection.losses.wiou._init_."""
+from importlib import import_module as _import_module
+_impl = _import_module("fire_detection.losses.wiou._init_")
+globals().update({key: value for key, value in vars(_impl).items() if not key.startswith("__")})

@@ -12,24 +12,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union
 
-try:
-    from src.fire_audit.config import (
-        DEFAULT_EPSILON,
-        DatasetScanResult,
-        ImageRecord,
-        SegmentedFrame,
-        SegmentationResult,
-    )
-    from src.fire_audit.audit.scanner import DatasetScanner
-except ImportError:
-    from fire_audit.config import (
-        DEFAULT_EPSILON,
-        DatasetScanResult,
-        ImageRecord,
-        SegmentedFrame,
-        SegmentationResult,
-    )
-    from fire_audit.audit.scanner import DatasetScanner
+from fire_audit.config import (
+    DEFAULT_EPSILON,
+    DatasetScanResult,
+    ImageRecord,
+    SegmentedFrame,
+    SegmentationResult,
+)
+from fire_audit.audit.scanner import DatasetScanner
 
 
 
@@ -457,10 +447,7 @@ class SequencePartitioner:
 
         if use_segmentation:
             try:
-                try:
-                    from src.fire_audit.segment.engine import VideoSegmentationEngine
-                except ImportError:
-                    from fire_audit.segment.engine import VideoSegmentationEngine
+                from fire_audit.segment.engine import VideoSegmentationEngine
                 engine = VideoSegmentationEngine()
 
 

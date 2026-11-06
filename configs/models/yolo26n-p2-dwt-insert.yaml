@@ -1,5 +1,5 @@
 # Approach 1: original YOLO26n-P2 plus two appended Haar residual blocks.
-# Build with src.modules.dwt.model.DWTYOLO; stock YOLO rejects custom tags.
+# Build with fire_detection.wavelet.model.DWTYOLO; stock YOLO rejects custom tags.
 # ConvThenHaar means original Conv -> added HaarResidual, before next C3k2.
 # Original indices/routes and pretrained parameter names are retained.
 nc: 2

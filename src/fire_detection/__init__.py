@@ -1,5 +1,5 @@
 """
-Fire and Smoke Detection Pipeline based on YOLOv8-P2 Transfer Learning.
+Dataset verification, detector training, evaluation, and image inference.
 """
 
 from .dataset import DatasetVerifier, verify_dataset

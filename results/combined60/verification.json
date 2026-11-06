@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "available_checkpoints_evaluated": 5,
+  "images_per_model": 4399,
+  "total_image_predictions": 21995,
+  "normalized_tiny_small_counts_verified": true,
+  "AP_table_matches_COCO_results": true,
+  "false_box_ceiling_verified": true,
+  "missing_plain_seed42_not_imputed": true,
+  "common_local_runtime": true,
+  "archived_Kaggle_metrics_kept_separate": true,
+  "original_archives_modified": false,
+  "training_performed": false
+}

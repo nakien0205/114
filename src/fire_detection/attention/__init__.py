@@ -1,0 +1,1 @@
+"""Fire-detection attention implementations."""

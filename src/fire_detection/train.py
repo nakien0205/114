@@ -1,6 +1,6 @@
 """
 Transfer Learning Training Pipeline for Fire and Smoke Detection.
-Loads the pretrained checkpoint and dataset configured in the config.yaml file.
+Loads the pretrained checkpoint and dataset configured in the configs/runtime.yaml file.
 """
 
 from __future__ import annotations
@@ -17,14 +17,11 @@ import numpy as np
 import torch
 from ultralytics import YOLO
 
-from src.modules.nwd.trainer import NWDDetectionTrainer
-from src.modules.wiou.trainer import WIoUDetectionTrainer
+from fire_detection.losses.nwd.trainer import NWDDetectionTrainer
+from fire_detection.losses.wiou.trainer import WIoUDetectionTrainer
 
 
-try:
-    from src.fire_audit.config import get_configured_data_yaml_path, get_training_config
-except ImportError:
-    from fire_audit.config import get_configured_data_yaml_path, get_training_config
+from fire_audit.config import get_configured_data_yaml_path, get_training_config
 
 logger = logging.getLogger(__name__)
 
@@ -189,9 +186,9 @@ def train_yolo(
     weights = weights if weights is not None else settings.get("weights")
     data = data if data is not None else settings.get("data") or get_configured_data_yaml_path()
     if weights is None:
-        raise ValueError("Training weights are not configured; set training.weights in the config.yaml")
+        raise ValueError("Training weights are not configured; set training.weights in the configs/runtime.yaml")
     if data is None:
-        raise ValueError("Dataset path is not configured; set data_path in the config.yaml")
+        raise ValueError("Dataset path is not configured; set data_path in the configs/runtime.yaml")
 
     def setting(name: str, value: Any, fallback: Any) -> Any:
         return value if value is not None else settings.get(name, fallback)
@@ -404,30 +401,30 @@ def build_parser() -> argparse.ArgumentParser:
         prog="train",
         description="Transfer learning training pipeline for fire and smoke detection",
     )
-    parser.add_argument("--weights", type=str, default=None, help="Path to pretrained weights (default: config.yaml)")
+    parser.add_argument("--weights", type=str, default=None, help="Path to pretrained weights (default: configs/runtime.yaml)")
     parser.add_argument(
         "--data",
         type=str,
         default=None,
-        help="Path to dataset YAML config (default: data_path from config.yaml)",
+        help="Path to dataset YAML config (default: data_path from configs/runtime.yaml)",
     )
-    parser.add_argument("--epochs", type=int, default=None, help="Number of training epochs (default: config.yaml)")
-    parser.add_argument("--batch", "--batch-size", dest="batch", type=int, default=None, help="Batch size (default: config.yaml)")
-    parser.add_argument("--imgsz", "--img-size", dest="imgsz", type=int, default=None, help="Image size (default: config.yaml)")
-    parser.add_argument("--lr0", type=float, default=None, help="Initial learning rate (default: config.yaml)")
-    parser.add_argument("--lrf", type=float, default=None, help="Final learning rate factor (default: config.yaml)")
-    parser.add_argument("--patience", type=int, default=None, help="Early stopping patience (default: config.yaml)")
+    parser.add_argument("--epochs", type=int, default=None, help="Number of training epochs (default: configs/runtime.yaml)")
+    parser.add_argument("--batch", "--batch-size", dest="batch", type=int, default=None, help="Batch size (default: configs/runtime.yaml)")
+    parser.add_argument("--imgsz", "--img-size", dest="imgsz", type=int, default=None, help="Image size (default: configs/runtime.yaml)")
+    parser.add_argument("--lr0", type=float, default=None, help="Initial learning rate (default: configs/runtime.yaml)")
+    parser.add_argument("--lrf", type=float, default=None, help="Final learning rate factor (default: configs/runtime.yaml)")
+    parser.add_argument("--patience", type=int, default=None, help="Early stopping patience (default: configs/runtime.yaml)")
     parser.add_argument(
         "--device",
         type=str,
         default=None,
         help="Device to run training on, e.g. 0, cuda:0, cpu (default: auto cuda/cpu)",
     )
-    parser.add_argument("--project", type=str, default=None, help="Project save directory (default: config.yaml)")
-    parser.add_argument("--name", type=str, default=None, help="Experiment name (default: config.yaml)")
-    parser.add_argument("--workers", type=int, default=None, help="Dataloader worker threads (default: config.yaml)")
-    parser.add_argument("--optimizer", type=str, default=None, help="Optimizer choice (default: config.yaml)")
-    parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility (default: config.yaml)")
+    parser.add_argument("--project", type=str, default=None, help="Project save directory (default: configs/runtime.yaml)")
+    parser.add_argument("--name", type=str, default=None, help="Experiment name (default: configs/runtime.yaml)")
+    parser.add_argument("--workers", type=int, default=None, help="Dataloader worker threads (default: configs/runtime.yaml)")
+    parser.add_argument("--optimizer", type=str, default=None, help="Optimizer choice (default: configs/runtime.yaml)")
+    parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility (default: configs/runtime.yaml)")
     parser.add_argument("--freeze", type=int, default=None, help="Number of layers to freeze (optional)")
     parser.add_argument(
         "--wandb-project",
@@ -453,7 +450,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         choices=["wiou", "nwd", "ciou"],
         default=None,
-        help="Loss function to use during training: wiou, nwd, or ciou (default: config.yaml)",
+        help="Loss function to use during training: wiou, nwd, or ciou (default: configs/runtime.yaml)",
     )
 
     # Custom NWD arguments

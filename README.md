@@ -1,112 +1,62 @@
-# Fire and Smoke Detection & Dataset Pipeline
+# Fire and Smoke Early Warning Research
 
-A modular Python framework for auditing fire & smoke datasets, preparing leakage-free train/validation/test splits, and training YOLO-based object detection models for fire and smoke detection.
+Research code for tiny fire/smoke detection and video warning. The main thesis method remains undecided.
 
----
+Start with [claims and evidence](docs/claims.md). Each supported statement points to its command, configuration, and saved result. See [data](docs/data.md) for the dataset identity and interpretation limits.
 
-## Overview
-
-The project is organized into two primary packages:
-
-1. **`fire_audit` (`src/fire_audit`)**:
-   - **Audit**: Scans images and bounding box annotations for corruption, coordinate errors, and class balance.
-   - **Segment**: Identifies continuous video sequences and near-duplicate frames using perceptual hashing (`dHash`).
-   - **Prepare**: Partitions dataset sequences into train, validation, and test splits to prevent data leakage.
-   - **Verify**: Acceptance testing on split integrity and YOLO annotation formats.
-
-2. **`fire_detection` (`src/fire_detection`)**:
-   - **Train**: Fine-tunes pretrained YOLO models on the prepared fire & smoke dataset.
-   - **Evaluate**: Evaluates model performance (Precision, Recall, mAP50, mAP50-95).
-   - **Infer**: Runs visual object detection inference on test images or directories.
-
-3. **`modules` (`src/modules`)**:
-   - Custom modules for training
-
----
-
-## Directory Structure
+## Layout
 
 ```text
-├── data.yaml            # YOLO dataset configuration (classes, split paths)
-├── evaluate.py          # CLI to evaluate model checkpoints
-├── infer.py             # CLI to run detection inference on images
-├── run_pipeline.py      # CLI for dataset audit, segmentation, and preparation
-├── train.py             # CLI to train/fine-tune YOLO models
-├── datasets/            # Multiple datasets (including manifest and split folders), added to .gitignore
-├── runs/
-│   ├── infer/           # Inference results
-│   ├── train/           # Training results
-│   └── val/             # Validation results
-│
-└── src/
-    ├── fire_audit/      # Dataset audit, sequence segmentation & partitioning
-    ├── fire_detection/  # Model training, evaluation & inference routines
-    └── modules/         # Custom bbox loss, detection loss, detection model & trainer
+configs/       Runtime templates, model definitions, experiment settings
+docs/          Methods, claim-to-result guide, reproduction instructions
+experiments/   Frozen experiment source and notebooks
+requirements/  Platform lock and optional dependencies
+results/       Selected machine-readable results and provenance
+scripts/       Training, evaluation, verification, and reproduction commands
+src/           Maintained dataset, detector, and warning packages
+tests/         CPU smoke tests and warning regressions
 ```
 
----
+## Setup
 
-## Getting Started
+Use Python 3.11. [Reproduction instructions](docs/reproducibility.md) distinguish the maintenance environment from historical training/replay environments.
 
-### Dataset
-
-We uses multiple datasets for testing.
-
-Download our training dataset here: https://www.kaggle.com/datasets/dtashton/combined-dataset
-
-### Shared Runtime Configuration
-
-Machine-specific dataset and training values are kept in the project-root `config.yaml` file. 
-Edit that file once to set `data_path`, `training.weights`, and the training parameters. 
-The loader also accepts an alternate location through the `CONFIG` environment variable.
-
-### 1. Dataset Audit and Preparation
-
-Run the full dataset pipeline (audit, segmentation, partitioning, and verification):
-
-```bash
-python run_pipeline.py all --data-dir "path/to/dataset" --output-dir "path/to/output" --train-ratio 0.8 --seed 42
+```powershell
+python -m venv .venv
+# Use the environment's Python executable below.
+python -m pip install -r requirements/locks/windows-py311-cu128.txt
+python -m pip install --no-deps -e .
 ```
 
-Or run individual stages:
+The supplied lock targets Windows and CUDA 12.8. Other platforms require a separately resolved environment; do not reuse it as the Kaggle training lock.
 
-```bash
-# Audit images and annotations
-python run_pipeline.py audit --data-dir "path/to/dataset" --output-dir "path/to/output"
+## Commands
 
-# Segment video frames to prevent data leakage
-python run_pipeline.py segment --data-dir "path/to/dataset" --output-dir "path/to/output"
-
-# Partition into train/val/test splits
-python run_pipeline.py prepare --data-dir "path/to/dataset" --train-ratio 0.8
+```powershell
+python scripts/train.py --help
+python scripts/evaluate.py --help
+python scripts/infer.py --help
+python scripts/run_pipeline.py --help
+python scripts/verify_dataset.py --help
+python scripts/warning.py --help
 ```
 
----
+Runtime defaults live in [configs/runtime.yaml](configs/runtime.yaml). Edit [configs/data.yaml](configs/data.yaml) for your dataset or pass an explicit experiment YAML. General defaults are not the recipe for every frozen experiment.
 
-### 2. Model Training
+## Verify a result
 
-Fine-tune a YOLO model on the dataset specified in `data.yaml`:
-
-```bash
-python train.py --weights "path/to/pretrained_model.pt" --data data.yaml --epochs 50 --batch 16 --imgsz 640
+```powershell
+python scripts/reproduce_table.py --check
+python scripts/check_evidence.py
+python -m pytest -q
 ```
 
----
+The first command rebuilds the five-run combined60 table from saved scored summaries. It does not repeat training, inference, or raw-prediction scoring. Full-run inputs and remaining reproduction gaps are documented in [claims and evidence](docs/claims.md).
 
-### 3. Model Evaluation
+Use `python scripts/check_evidence.py --require-tracked` before preparing a shared commit. It checks inclusion and file identity, not scientific validity or full dependency closure.
 
-Evaluate trained weights on validation or test sets:
+## Research boundaries
 
-```bash
-python evaluate.py --weights "runs/train/model_name/weights/best.pt" --data data.yaml --split test --out-dir runs/val/eval
-```
+Still-image AP does not establish warning delay or video false alarms/hour. Source splits are not verified independent scenes. Previously examined video studies are exploratory. No reliable ultra-early smoke timing or physical edge-device performance is established.
 
----
-
-### 4. Inference and Visualization
-
-Run detection on sample images:
-
-```bash
-python infer.py --weights "runs/train/model_name/weights/best.pt" --source "path/to/images" --output-dir "runs/infer"
-```
+See the [experiment index](docs/research-index.md), [repository map](docs/repository-map.md), and [LICENSE](LICENSE). External dependencies and datasets retain their own licenses. [CITATION.cff](CITATION.cff) intentionally leaves author/institution fields blank for the owner to complete; it is not yet a validated release citation.

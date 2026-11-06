@@ -1,0 +1,21 @@
+# Draft: fill the blank author and institution fields before release.
+# This file is not yet a complete, validated citation.
+cff-version: 1.2.0
+message: "If you use this code, please cite the thesis below. Citation metadata is awaiting completion."
+title: "Fire and Smoke Early Warning Research"
+type: software
+authors:
+  - family-names: ""
+    given-names: ""
+repository-code: "https://github.com/nakien0205/114"
+license: MIT
+preferred-citation:
+  type: thesis
+  title: "Ultra-Early Warning System for Tiny Fire and Smoke Detection using Contextual Attention and Specialized Feature Pyramid"
+  authors:
+    - family-names: ""
+      given-names: ""
+  thesis-type: ""
+  department: ""
+  institution:
+    name: ""

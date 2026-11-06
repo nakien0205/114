@@ -1,0 +1,575 @@
+{
+  "scope": "Byte-identical copies from preserved local history; original paths are provenance, not required checkout locations.",
+  "files": [
+    {
+      "path": "experiments/combined60/plain/baseline_models.py",
+      "original_path": "research/nano-baseline-src-shared-20261103/baseline_models.py",
+      "sha256": "9434b66b42a70e17da6451f6bc66e07e2ec127858972d9bfbcca0a9e18993269",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/plain/data_runtime.py",
+      "original_path": "research/nano-baseline-src-shared-20261103/data_runtime.py",
+      "sha256": "0032d2d8c88c6f339bdd9b0161ea2d897935af8cdfe5cabcb95b9eac95c913cc",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/plain/nano_baseline_home_dfire_60e_seeds42_2026_shared_v1.ipynb",
+      "original_path": "research/nano-baseline-src-shared-20261103/nano_baseline_home_dfire_60e_seeds42_2026_shared_v1.ipynb",
+      "sha256": "7265c3134a1719a27ff558e4daf292c5f75649ffa9c9cd67d5aa769119f31464",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/plain/nano_baseline_SRC_home_dfire_60e_seeds42_2026_shared_v1.ipynb",
+      "original_path": "research/nano-baseline-src-shared-20261103/nano_baseline_SRC_home_dfire_60e_seeds42_2026_shared_v1.ipynb",
+      "sha256": "26acd479703570cba717abd8d5d142d0e067d5ba8d65cb0022776703a8a75f3d",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/plain/operating_points.py",
+      "original_path": "research/nano-baseline-src-shared-20261103/operating_points.py",
+      "sha256": "17ee1eac1aabf8052de16da27116d71c061907b5cae611773521d8161d45b384",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/plain/runner.py",
+      "original_path": "research/nano-baseline-src-shared-20261103/runner.py",
+      "sha256": "257117bff11fa3e6d7e82c11bdf620ef39bf46571603949352cd9a9f84310b3d",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/plain/size_evaluator.py",
+      "original_path": "research/nano-baseline-src-shared-20261103/size_evaluator.py",
+      "sha256": "6bbfa9bb85f5889526c17a53c17840fa302e70c8f3585177db288c00b3dd1bc8",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/plain/src_attention.py",
+      "original_path": "research/nano-baseline-src-shared-20261103/src_attention.py",
+      "sha256": "d14cc3a174517e705cb6a2e4cfb1be7fe0d87f797fe7ae7c5fab34f9716d3518",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/plain/src_models.py",
+      "original_path": "research/nano-baseline-src-shared-20261103/src_models.py",
+      "sha256": "2096dd2898e921ecd84006320aca06b67318c907ca9a0c35fd64df3fab354d67",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/plain/suite.py",
+      "original_path": "research/nano-baseline-src-shared-20261103/suite.py",
+      "sha256": "418189aa47da752d094365756e5838c33a48bc1a88fe3fa9a7074fd98daa735b",
+      "role": "frozen_source"
+    },
+    {
+      "path": "configs/experiments/combined60/plain/build-manifest.json",
+      "original_path": "research/nano-baseline-src-shared-20261103/build-manifest.json",
+      "sha256": "03096f357e9465923e79acb3cc6bfb5b01bb71adfdd7e0eefe4c5351221664de",
+      "role": "archived_protocol"
+    },
+    {
+      "path": "experiments/combined60/adaptive/adaptive_models.py",
+      "original_path": "research/nano-adaptive-shared-20261103/adaptive_models.py",
+      "sha256": "b0f1dd2e8f902dcbcd96eb57ca76c42d0ba09d04e3720feedf16377511df9185",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/adaptive/coarse_gate.py",
+      "original_path": "research/nano-adaptive-shared-20261103/coarse_gate.py",
+      "sha256": "c0fc8ac2fe269be32891ca767d5453b23232381b07d4d030e7ee02cd23cc651d",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/adaptive/data_runtime.py",
+      "original_path": "research/nano-adaptive-shared-20261103/data_runtime.py",
+      "sha256": "0032d2d8c88c6f339bdd9b0161ea2d897935af8cdfe5cabcb95b9eac95c913cc",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/adaptive/nano_old_adaptive_home_dfire_60e_seeds42_2026_shared_v1.ipynb",
+      "original_path": "research/nano-adaptive-shared-20261103/nano_old_adaptive_home_dfire_60e_seeds42_2026_shared_v1.ipynb",
+      "sha256": "6d76beb882e559174a3288afef3977679f3c3ee24758674329c240fae68c4e1d",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/adaptive/operating_points.py",
+      "original_path": "research/nano-adaptive-shared-20261103/operating_points.py",
+      "sha256": "17ee1eac1aabf8052de16da27116d71c061907b5cae611773521d8161d45b384",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/adaptive/runner.py",
+      "original_path": "research/nano-adaptive-shared-20261103/runner.py",
+      "sha256": "a52fd74d1472ce369848d0aead9022b922b67b3d1c24c87909d916c820484379",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/adaptive/size_evaluator.py",
+      "original_path": "research/nano-adaptive-shared-20261103/size_evaluator.py",
+      "sha256": "6bbfa9bb85f5889526c17a53c17840fa302e70c8f3585177db288c00b3dd1bc8",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/adaptive/suite.py",
+      "original_path": "research/nano-adaptive-shared-20261103/suite.py",
+      "sha256": "d2bb1864119d1a00abe8f0e7fe21ef275519fb1b7973bbd3d4e7eec3e1e56214",
+      "role": "frozen_source"
+    },
+    {
+      "path": "configs/experiments/combined60/adaptive/build-manifest.json",
+      "original_path": "research/nano-adaptive-shared-20261103/build-manifest.json",
+      "sha256": "18030e1cba402eb0b962ccec259acfeb581e987a24706408c44b31423373d5f2",
+      "role": "archived_protocol"
+    },
+    {
+      "path": "experiments/combined60/dense/data_runtime.py",
+      "original_path": "research/dense-spatial-20261102/data_runtime.py",
+      "sha256": "0032d2d8c88c6f339bdd9b0161ea2d897935af8cdfe5cabcb95b9eac95c913cc",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/dense/dense_model.py",
+      "original_path": "research/dense-spatial-20261102/dense_model.py",
+      "sha256": "e0d92c9bf51708276c24dac98b32daa2aabb4bffe00fbf30f4f913604de57f91",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/dense/dense_spatial_home_dfire_60e_seeds42_2026_dualT4.ipynb",
+      "original_path": "research/dense-spatial-20261102/dense_spatial_home_dfire_60e_seeds42_2026_dualT4.ipynb",
+      "sha256": "69828d0028444a126770b38d385790061e165725011595daaee8673c057ec765",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/dense/operating_points.py",
+      "original_path": "research/dense-spatial-20261102/operating_points.py",
+      "sha256": "17ee1eac1aabf8052de16da27116d71c061907b5cae611773521d8161d45b384",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/dense/runner.py",
+      "original_path": "research/dense-spatial-20261102/runner.py",
+      "sha256": "376f2c03fa9b02b7aae7832397ebde21df4b5bc4671e0cb8270c8dc96d17c215",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/dense/size_evaluator.py",
+      "original_path": "research/dense-spatial-20261102/size_evaluator.py",
+      "sha256": "6bbfa9bb85f5889526c17a53c17840fa302e70c8f3585177db288c00b3dd1bc8",
+      "role": "frozen_source"
+    },
+    {
+      "path": "experiments/combined60/dense/suite.py",
+      "original_path": "research/dense-spatial-20261102/suite.py",
+      "sha256": "646161dc2ba13e7f4be5bbe6c612c97646025b3a48d1263c85e843176617c40b",
+      "role": "frozen_source"
+    },
+    {
+      "path": "configs/experiments/combined60/dense/protocol.json",
+      "original_path": "research/dense-spatial-20261102/protocol.json",
+      "sha256": "193fb159c4f40375be23a28eb1bd191b245a724e10fa8c5f7b46e996b7bcf815",
+      "role": "archived_protocol"
+    },
+    {
+      "path": "configs/experiments/combined60/dense/build-manifest.json",
+      "original_path": "research/dense-spatial-20261102/build-manifest.json",
+      "sha256": "c639e5d6fed3ec82779fdc66ca3295ae52b26814f5825fa94ee3df38c23ac99c",
+      "role": "archived_protocol"
+    },
+    {
+      "path": "results/historical/original-versus-p2-20261030/comparison.csv",
+      "original_path": "reports/original-versus-p2-20261030/comparison.csv",
+      "sha256": "16f46f02130335b9a7a9eed629e6dfa4b089809da68035248355f3c612a40b05",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/original-versus-p2-20261030/verification.json",
+      "original_path": "reports/original-versus-p2-20261030/verification.json",
+      "sha256": "58ed8fb6421d94934fd83dede635488c28a9d84ccfe69b2d743516679e2c02af",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/nano-src-comparison-20261028/comparison.csv",
+      "original_path": "reports/nano-src-comparison-20261028/comparison.csv",
+      "sha256": "198684e9419b3bf866d8673c35fd825856d64cac886e4b3c184ee1b89e737419",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/nano-src-comparison-20261028/verification.json",
+      "original_path": "reports/nano-src-comparison-20261028/verification.json",
+      "sha256": "917fa3224314232380e8cfb290790ca23a9278a11c457f1ba8d3bd0a1d705cc7",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/medium-src-comparison-20261029/comparison.csv",
+      "original_path": "reports/medium-src-comparison-20261029/comparison.csv",
+      "sha256": "ba03a1949a34faccc7177128779c3801b1cc598990ed69efb4cb6e1eb070dc80",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/medium-src-comparison-20261029/verification.json",
+      "original_path": "reports/medium-src-comparison-20261029/verification.json",
+      "sha256": "eb022cd87de779b8bcdcb27d7214c94ca708565450e8319969ea69c2daff016c",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/medium-adaptive-comparison-20261027/comparison.csv",
+      "original_path": "reports/medium-adaptive-comparison-20261027/comparison.csv",
+      "sha256": "bca0fe74ec1d13986df3eb32d83652157df5371e2abe495881d065aa6381e6e6",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/medium-adaptive-comparison-20261027/verification.json",
+      "original_path": "reports/medium-adaptive-comparison-20261027/verification.json",
+      "sha256": "2fbb4f195c5daf43bbf5004b0a04cd9a55356bd6dc485502fb4cd1041f3a4f29",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/medium-neck-final-comparison-20261027/verification.json",
+      "original_path": "reports/medium-neck-final-comparison-20261027/verification.json",
+      "sha256": "cf1f017eb369c619c63aa021e4b7ce34a61cd4a947f28ca75ccde48d6ab86dd8",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/nano-dysample-comparison-20261029/comparison.csv",
+      "original_path": "reports/nano-dysample-comparison-20261029/comparison.csv",
+      "sha256": "ce64df84d8ab481c5e924668a5ceb153526b4dd07dea16370d370f7fb557dfa1",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/nano-dysample-comparison-20261029/verification.json",
+      "original_path": "reports/nano-dysample-comparison-20261029/verification.json",
+      "sha256": "cec48b9032f1540ed8a55c90e27ffd9ab88efbc9170a5331aa9eb6aab359838d",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/nano-adaptive-dysample-comparison-20261029/comparison.csv",
+      "original_path": "reports/nano-adaptive-dysample-comparison-20261029/comparison.csv",
+      "sha256": "1847f167a74512ef472dfc9edc4b5baf778687ad61df8b2a92a321aa3ecc8551",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/historical/nano-adaptive-dysample-comparison-20261029/verification.json",
+      "original_path": "reports/nano-adaptive-dysample-comparison-20261029/verification.json",
+      "sha256": "92e19fb170c574624986ca382e8c52b1be0217d224fa8393b764e98d6917adbb",
+      "role": "historical_result"
+    },
+    {
+      "path": "results/combined60/comparison.csv",
+      "original_path": "reports/home-dfire-three-models-20261103/comparison.csv",
+      "sha256": "2569ec90862f2e2c23e73fd0f4e0fd7c9fd3727dfe3279f38373269dc6a8943c",
+      "role": "saved_result"
+    },
+    {
+      "path": "results/combined60/replay-runtime-protocol.json",
+      "original_path": "reports/home-dfire-three-models-20261103/replay-runtime-protocol.json",
+      "sha256": "a168c420e84619b9ca45ceb9ebefc3adc38592d7a97861c59e9319822c380137",
+      "role": "saved_result"
+    },
+    {
+      "path": "results/combined60/verification.json",
+      "original_path": "reports/home-dfire-three-models-20261103/verification.json",
+      "sha256": "2df6ae4f295ebf16daf70f26861ca7444ec68c78d707a42e4e0055bc34272d15",
+      "role": "saved_result"
+    },
+    {
+      "path": "results/combined60/archive-audit.json",
+      "original_path": "reports/home-dfire-three-models-20261103/archive-audit.json",
+      "sha256": "11b5d3605164d77a1d5d105e2ebc8fbd3985d0384fee26505997388491f896a4",
+      "role": "saved_result"
+    },
+    {
+      "path": "results/combined60/paired-differences.json",
+      "original_path": "reports/home-dfire-three-models-20261103/paired-differences.json",
+      "sha256": "3ddbccb94cda88efbf7fa7dadcd3043a58c83a7eec945ea10e4d1db41935b528",
+      "role": "saved_result"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed2026/local-summary.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed2026/local-summary.json",
+      "sha256": "cccbe2483f1e9fa4f1e262ec3f0b78700c0c3af3fd214824d91f9026af45ed20",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed2026/normal-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed2026/normal-metrics.json",
+      "sha256": "5d5d3dea8756a5c41c4f9a72e3b93f1e688f72cedf9c4e196e272eec4cd64f9e",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed2026/size-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed2026/size-metrics.json",
+      "sha256": "507cbc22f6da20f0ab113272fa09c83497bb31a1ed68703697491c6d5c0dc5ea",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed2026/operating-points.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed2026/operating-points.json",
+      "sha256": "3d176d6c39109bef7e5bd1c9cba322e6be03823fcdb54b1f823ccc0222f3bdb6",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed2026/training-audit.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed2026/training-audit.json",
+      "sha256": "f6cd65412441f32f4c9c05dae58821d9089506c69a62a79b8640a0a069a3a7fe",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed2026/checkpoint-metadata.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed2026/checkpoint-metadata.json",
+      "sha256": "0e23f5ae30dde6812ff5857434750d22e74304635ed3b3a44de4f7f340cabfba",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed2026/results.csv",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed2026/results.csv",
+      "sha256": "02e21554bf4ef03be7a0a78bb434e0d96df042156410c769d3bd479a7d51089d",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed42/local-summary.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed42/local-summary.json",
+      "sha256": "89c2d9ae7c1d565cc0be40997828b2954bba5740e313f9aaa8e44e89fa5561f8",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed42/normal-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed42/normal-metrics.json",
+      "sha256": "afc130b3bcb8a28928241e5f5d3179e51b794238b0dce13dd37b381fc19a71a7",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed42/size-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed42/size-metrics.json",
+      "sha256": "13358589fc54cd9f9de9bba9773d49b26d8a1bc434742e87d6a05974df73823b",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed42/operating-points.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed42/operating-points.json",
+      "sha256": "831630f19de07190cabddfd8b30bdf4425dc9b2d61ca63895bc522e1f12b1b7e",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed42/training-audit.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed42/training-audit.json",
+      "sha256": "588a81f47b1411fd6e66244be10c56cb81e41ded66e0f603027bd05be6a74c9f",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed42/checkpoint-metadata.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed42/checkpoint-metadata.json",
+      "sha256": "d59f4845bd6e56f79a5d99af1196a617fa367d8145f3c8002a553b300a9dfc71",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/adaptive_seed42/results.csv",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/adaptive_seed42/results.csv",
+      "sha256": "8ea968e38a3a3acc4bedbaa4e6a4682e57eb1b6a5040d8657b56785fb495b632",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed2026/local-summary.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed2026/local-summary.json",
+      "sha256": "2fed70f9c722c45a37116ce671068f8d128d6ab54e378952347705db2c0dd95c",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed2026/normal-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed2026/normal-metrics.json",
+      "sha256": "53f092d7ea5959c93b9e5ded32c9d37eb312e932e4cecaeae8c9b438c396bc81",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed2026/size-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed2026/size-metrics.json",
+      "sha256": "9025cbbfa7b493d06de41a9c11b750e91d47537fd143876ff27a993f1cb732b8",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed2026/operating-points.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed2026/operating-points.json",
+      "sha256": "971229fd360f869f40538736036312f6af8929553cdd3c69e4669ada1aa99b43",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed2026/training-audit.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed2026/training-audit.json",
+      "sha256": "60c28e4e2220f53185a60070148248af10700af837d8899f0c2e4e5792a6aaa9",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed2026/checkpoint-metadata.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed2026/checkpoint-metadata.json",
+      "sha256": "3b788019316b9020de8878f0562a3635bd9291e899fec83d8fddad6cb0e705c6",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed2026/results.csv",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed2026/results.csv",
+      "sha256": "d12c30dc83d07a2e1d6d67544c7072425fc5c2adb89d60d2cebba610186a394a",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed42/local-summary.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed42/local-summary.json",
+      "sha256": "0a246c38de25a19f93b62d1ab76dd3da80929c134328626d1a7b77d196395e93",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed42/normal-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed42/normal-metrics.json",
+      "sha256": "2a149ee159a9862d3de81f34798d343a73f02aa27a2f88bbb1fdbba7131f7184",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed42/size-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed42/size-metrics.json",
+      "sha256": "46223a30aa909b872cd8d5ad8175bdf3bba77687ece279e3de0ce1f6bd2b1313",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed42/operating-points.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed42/operating-points.json",
+      "sha256": "e46ce06d30fb192032cfdbd83cda3dcc20fc9cdfaf0d103bfc9550024c166f7b",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed42/training-audit.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed42/training-audit.json",
+      "sha256": "a70aa928d329e78a886796a2bdb95c9074f8103c32b15b9cbe7146624344daf2",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed42/checkpoint-metadata.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed42/checkpoint-metadata.json",
+      "sha256": "327424b877c49d76a5be9024cc82007ed6f9944c91055030edab1fa008ef4244",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/dense_seed42/results.csv",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/dense_seed42/results.csv",
+      "sha256": "f6aa46b8caf88671f64de2533b4286e231c3b39b0e3ae9a3865a588027cc75ae",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/plain_seed2026/local-summary.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/plain_seed2026/local-summary.json",
+      "sha256": "a72fdbf96c8c20ebf396f31f251238a2fb338cdaea36a29a178bcbb35b8717a7",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/plain_seed2026/normal-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/plain_seed2026/normal-metrics.json",
+      "sha256": "7870f5a4ce3ddade7ccf1fe8daf705d01f2c03c4ca62f9db034fce11604f01c7",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/plain_seed2026/size-metrics.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/plain_seed2026/size-metrics.json",
+      "sha256": "e684ab80619a10a89d8b33f342baa3a83dab415fc7ed0e31aecfbd2cecd5f3dc",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/plain_seed2026/operating-points.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/plain_seed2026/operating-points.json",
+      "sha256": "4bf8d359019f4dc05ea7595fc8180b82b1ab61f223bb8ea2b15c9d1028216e70",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/plain_seed2026/training-audit.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/plain_seed2026/training-audit.json",
+      "sha256": "2251691db39d4674e2dea0f50ac6c18f6321ff64f56718190f6b645abddb81d7",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/plain_seed2026/checkpoint-metadata.json",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/plain_seed2026/checkpoint-metadata.json",
+      "sha256": "faa579b151fb6d00a1f44744767c96ed974f4a09f9508fbb7af0ad1cb3fc5d2c",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "results/combined60/runs/plain_seed2026/results.csv",
+      "original_path": "reports/home-dfire-three-models-20261103/runs/plain_seed2026/results.csv",
+      "sha256": "77375410d372f5f0fb1dce3beb11ff389693040616c2309dbf15d1d294af7eb8",
+      "role": "saved_run_record"
+    },
+    {
+      "path": "configs/datasets/combined60/dataset-manifest.json",
+      "original_path": "reports/home-dfire-three-models-20261103/assets/dataset-manifest.json",
+      "sha256": "d7f4b7386e63eabb4742550652911791fbaab62f2533f12535199c1f33046240",
+      "role": "dataset_identity_or_ground_truth"
+    },
+    {
+      "path": "configs/datasets/combined60/validation-ground-truth.json",
+      "original_path": "reports/home-dfire-three-models-20261103/assets/validation-ground-truth.json",
+      "sha256": "7fa06537197c4b36fedaa1ba217311009687c5eabd690a8d68f14f6e340b1cf9",
+      "role": "dataset_identity_or_ground_truth"
+    },
+    {
+      "path": "configs/datasets/combined60/data-audit.json",
+      "original_path": "research/dense-spatial-20261102/data-audit.json",
+      "sha256": "da7a2f1474781e5b37f373408b3acaa24b42d42e1fb2bfba1c743ef7b822919c",
+      "role": "dataset_processing_record"
+    },
+    {
+      "path": "experiments/flame_case_study/flame.py",
+      "original_path": "research/flame-inspired-20261106/flame.py",
+      "sha256": "73e9441954f485d759865e0ac79f07464b7f3bf28de5dc417a95bb04be7d3b90",
+      "role": "frozen_case_study_source"
+    },
+    {
+      "path": "experiments/flame_case_study/run.py",
+      "original_path": "research/flame-inspired-20261106/run.py",
+      "sha256": "8f5b1db545d72fbe25eb81161aff30bca0630ac8164a3c4ebc699c3b3af0d242",
+      "role": "frozen_case_study_source"
+    },
+    {
+      "path": "experiments/flame_case_study/score_video12.py",
+      "original_path": "research/flame-inspired-20261106/score_video12.py",
+      "sha256": "ece6509f1618c10cfc9040c6ead99fdee2e6e86b6258f475f63849615a1f8df4",
+      "role": "frozen_case_study_source"
+    },
+    {
+      "path": "experiments/flame_case_study/verify_video12.py",
+      "original_path": "research/flame-inspired-20261106/verify_video12.py",
+      "sha256": "4378249efad31b27a8aae532faf987776525ad436f6e386a47ef5cb856acb8b9",
+      "role": "frozen_case_study_source"
+    },
+    {
+      "path": "experiments/flame_case_study/test_flame.py",
+      "original_path": "research/flame-inspired-20261106/test_flame.py",
+      "sha256": "22c49d8a19acb4e8ebbbb59525117c710cd610242363dad72ad1617ec04f2134",
+      "role": "frozen_case_study_source"
+    },
+    {
+      "path": "experiments/flame_case_study/video12-study.json",
+      "original_path": "research/flame-inspired-20261106/video12-study.json",
+      "sha256": "375511c9981a4d9161b8d7b3bea57683638c8221463b154ea2f174815c587eb4",
+      "role": "frozen_case_study_source"
+    },
+    {
+      "path": "results/flame_case_study/evaluation.json",
+      "original_path": "research/flame-inspired-20261106/outputs/video12-paper-settings-v2/evaluation.json",
+      "sha256": "1dc4b06370382eb8f56ffb05fd9412727c4587c8f94f49852ed13ed821600a56",
+      "role": "case_study_result"
+    },
+    {
+      "path": "results/flame_case_study/summary.json",
+      "original_path": "research/flame-inspired-20261106/outputs/video12-paper-settings-v2/summary.json",
+      "sha256": "69c6141e12e10c0401f4b77e1ac824eb879902e5d2327365d59ce9422cdb7537",
+      "role": "case_study_result"
+    },
+    {
+      "path": "results/flame_case_study/independent-verification.json",
+      "original_path": "research/flame-inspired-20261106/outputs/video12-paper-settings-v2/independent-verification.json",
+      "sha256": "557949a05f0792c53bf6968612b76d2d492e7f773f189d00201db25f9b9be790",
+      "role": "case_study_result"
+    },
+    {
+      "path": "results/historical/medium-neck-final-comparison-20261027/medium-comparison.csv",
+      "original_path": "reports/medium-neck-final-comparison-20261027/medium-comparison.csv",
+      "sha256": "4108fdb8a50f60e2fcbc7338d7d470214c4e91fcdf68d1ba8ed8ad87ac3b558c",
+      "role": "historical_result"
+    }
+  ]
+}

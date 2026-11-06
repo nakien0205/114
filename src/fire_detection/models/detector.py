@@ -1,7 +1,7 @@
 # src/fire_detection/models/detector.py
 """
 Unified Detector Architecture: MobileNetV4 + Standard PAN + Decoupled Detection Head.
-Baseline fire and smoke detector for edge deployment without attention mechanisms.
+Experimental detector implementation; edge-device performance is not established.
 """
 
 from __future__ import annotations

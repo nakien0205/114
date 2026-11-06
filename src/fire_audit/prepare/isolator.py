@@ -7,11 +7,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
-from src.fire_audit.config import (
+from fire_audit.config import (
     DEFAULT_EPSILON,
     ImageRecord,
 )
-from src.fire_audit.audit.scanner import DatasetScanner
+from fire_audit.audit.scanner import DatasetScanner
 
 
 def compute_file_sha256(path: Path) -> str:

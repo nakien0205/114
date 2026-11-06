@@ -1,0 +1,30 @@
+[
+  {
+    "comparison": "adaptive minus plain",
+    "seed": 2026,
+    "tiny_fire_AP_difference_pp": 0.33069401151451794,
+    "small_fire_AP_difference_pp": -0.2753310093729644,
+    "overall_AP_difference_pp": 0.4134098423247745
+  },
+  {
+    "comparison": "dense minus plain",
+    "seed": 2026,
+    "tiny_fire_AP_difference_pp": -0.4218389719203741,
+    "small_fire_AP_difference_pp": -1.5234692114678483,
+    "overall_AP_difference_pp": -1.3280110372430376
+  },
+  {
+    "comparison": "adaptive minus dense",
+    "seed": 42,
+    "tiny_fire_AP_difference_pp": -0.43862759288099684,
+    "small_fire_AP_difference_pp": 1.9124496206502473,
+    "overall_AP_difference_pp": 2.2393140414438015
+  },
+  {
+    "comparison": "adaptive minus dense",
+    "seed": 2026,
+    "tiny_fire_AP_difference_pp": 0.752532983434892,
+    "small_fire_AP_difference_pp": 1.248138202094884,
+    "overall_AP_difference_pp": 1.741420879567812
+  }
+]

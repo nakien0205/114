@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Optional, Tuple
 from PIL import Image, UnidentifiedImageError
 
-from src.fire_audit.config import (
+from fire_audit.config import (
     CLASS_IDS,
     DEFAULT_EPSILON,
     BoundingBox,
@@ -175,10 +175,7 @@ def validate_image_file(image_path: Path) -> Tuple[bool, Optional[str], int, int
         return False, f"Image file is 0 bytes: {image_path}", 0, 0
 
     try:
-        try:
-            from src.fire_audit.segment.classifier import get_image_dimensions
-        except ImportError:
-            from fire_audit.segment.classifier import get_image_dimensions
+        from fire_audit.segment.classifier import get_image_dimensions
         w, h = get_image_dimensions(image_path)
         if w > 0 and h > 0:
             return True, None, w, h

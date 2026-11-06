@@ -1,0 +1,16 @@
+{
+  "notebook": "D:\\Python\\Projects\\114\\research\\nano-adaptive-shared-20261103\\nano_old_adaptive_home_dfire_60e_seeds42_2026_shared_v1.ipynb",
+  "notebook_sha256": "6d76beb882e559174a3288afef3977679f3c3ee24758674329c240fae68c4e1d",
+  "delivery": "C:\\Users\\phong\\Downloads\\nano_old_adaptive_home_dfire_60e",
+  "shared_zip": "D:\\Python\\Projects\\114\\research\\shared-training-assets-20261102\\fire_training_shared_v1.zip",
+  "shared_zip_sha256": "16f18284ccfa7cb868496b5f098aef2fca46de147e7fbefb83152fa1466967c3",
+  "shared_companion_unchanged": true,
+  "dataset_version_sha256": "b7ff6c25e1326f9f380b73bef5cbec78fe658618169a8fdef8c6810d6a9d6ad7",
+  "gate_source_sha256": "c0fc8ac2fe269be32891ca767d5453b23232381b07d4d030e7ee02cd23cc651d",
+  "training_runs": 2,
+  "seeds": [
+    42,
+    2026
+  ],
+  "training_launched": false
+}

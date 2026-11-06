@@ -1,0 +1,23 @@
+{
+  "notebooks": [
+    {
+      "arm": "plain",
+      "notebook": "D:\\Python\\Projects\\114\\research\\nano-baseline-src-shared-20261103\\nano_baseline_home_dfire_60e_seeds42_2026_shared_v1.ipynb",
+      "sha256": "7265c3134a1719a27ff558e4daf292c5f75649ffa9c9cd67d5aa769119f31464",
+      "embedded_payload_bytes": 21019
+    },
+    {
+      "arm": "src",
+      "notebook": "D:\\Python\\Projects\\114\\research\\nano-baseline-src-shared-20261103\\nano_baseline_SRC_home_dfire_60e_seeds42_2026_shared_v1.ipynb",
+      "sha256": "26acd479703570cba717abd8d5d142d0e067d5ba8d65cb0022776703a8a75f3d",
+      "embedded_payload_bytes": 21043
+    }
+  ],
+  "delivery": "C:\\Users\\phong\\Downloads\\nano_baseline_SRC_home_dfire_60e",
+  "shared_zip": "D:\\Python\\Projects\\114\\research\\shared-training-assets-20261102\\fire_training_shared_v1.zip",
+  "shared_zip_sha256": "16f18284ccfa7cb868496b5f098aef2fca46de147e7fbefb83152fa1466967c3",
+  "shared_companion_unchanged": true,
+  "dataset_version_sha256": "b7ff6c25e1326f9f380b73bef5cbec78fe658618169a8fdef8c6810d6a9d6ad7",
+  "total_training_runs_when_user_executes_both": 4,
+  "training_launched": false
+}

@@ -1,0 +1,136 @@
+{
+  "model": "dense",
+  "seed": 2026,
+  "checkpoint_sha256": "0e096a0c4dfaa9f397c3661be1fe1629862572a1e0b735fbe8813dce15ec8253",
+  "tiny_fire_AP": 0.21863521989672519,
+  "small_fire_AP": 0.30320026888518253,
+  "small_smoke_AP": 0.2891351491924671,
+  "normal": {
+    "overall": {
+      "metrics/precision(B)": 0.7744364553792163,
+      "metrics/recall(B)": 0.6938274372296094,
+      "metrics/mAP50(B)": 0.7779765903764415,
+      "metrics/mAP50-95(B)": 0.4637203796925595,
+      "fitness": 0.4637203796925595
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.15686435553533737,
+      "inference": 4.189779518072408,
+      "loss": 0.0007584223686686686,
+      "postprocess": 0.23756692430091744
+    },
+    "per_class": [
+      {
+        "class_id": 0,
+        "precision": 0.7415925708927379,
+        "recall": 0.6629499840713603,
+        "AP50": 0.7465813824497258,
+        "AP50_95": 0.435919099790569
+      },
+      {
+        "class_id": 1,
+        "precision": 0.8072803398656948,
+        "recall": 0.7247048903878583,
+        "AP50": 0.8093717983031571,
+        "AP50_95": 0.49152165959455
+      }
+    ]
+  },
+  "per_source": {
+    "home": {
+      "tiny_fire_AP": 0.4306356766506942,
+      "small_fire_AP": 0.5068321349203013
+    },
+    "dfire": {
+      "tiny_fire_AP": 0.13652348462266103,
+      "small_fire_AP": 0.2260112361750725
+    }
+  },
+  "operating_points": {
+    "combined": {
+      "images": 4399,
+      "tiny_fire_GT": 439,
+      "small_fire_GT": 1279,
+      "at_30_false_boxes_per100_ceiling": {
+        "confidence": 0.192894846200943,
+        "tiny_fire_TP": 237,
+        "small_fire_TP": 797,
+        "tiny_fire_recall": 0.5398633257403189,
+        "small_fire_recall": 0.6231430805316653,
+        "false_fire_boxes": 1310,
+        "false_fire_boxes_per100": 29.779495339849966,
+        "fire_free_alarm_images": 43,
+        "fire_free_images": 2626
+      },
+      "at_90percent_tiny_recall": {
+        "confidence": 0.0014851177111268044,
+        "tiny_fire_TP": 396,
+        "small_fire_TP": 1206,
+        "tiny_fire_recall": 0.9020501138952164,
+        "small_fire_recall": 0.9429241594996091,
+        "false_fire_boxes": 43457,
+        "false_fire_boxes_per100": 987.8836099113435,
+        "fire_free_alarm_images": 945,
+        "fire_free_images": 2626
+      },
+      "rule": "Greedy score-ordered IoU>=0.5 against ALL fire GT; include confidence ties; ceiling maximizes tiny TP, then small TP, then minimizes FP",
+      "limitation": "Validation-selected descriptive thresholds; still-image boxes/alarms, not video incidents or frozen deployment performance"
+    },
+    "home": {
+      "images": 1300,
+      "tiny_fire_GT": 109,
+      "small_fire_GT": 317,
+      "at_30_false_boxes_per100_ceiling": {
+        "confidence": 0.14033624529838562,
+        "tiny_fire_TP": 94,
+        "small_fire_TP": 282,
+        "tiny_fire_recall": 0.8623853211009175,
+        "small_fire_recall": 0.889589905362776,
+        "false_fire_boxes": 387,
+        "false_fire_boxes_per100": 29.76923076923077,
+        "fire_free_alarm_images": 10,
+        "fire_free_images": 406
+      },
+      "at_90percent_tiny_recall": {
+        "confidence": 0.03680062294006348,
+        "tiny_fire_TP": 99,
+        "small_fire_TP": 302,
+        "tiny_fire_recall": 0.908256880733945,
+        "small_fire_recall": 0.9526813880126183,
+        "false_fire_boxes": 925,
+        "false_fire_boxes_per100": 71.15384615384616,
+        "fire_free_alarm_images": 32,
+        "fire_free_images": 406
+      },
+      "rule": "Greedy score-ordered IoU>=0.5 against ALL fire GT; include confidence ties; ceiling maximizes tiny TP, then small TP, then minimizes FP",
+      "limitation": "Validation-selected descriptive thresholds; still-image boxes/alarms, not video incidents or frozen deployment performance"
+    },
+    "dfire": {
+      "images": 3099,
+      "tiny_fire_GT": 330,
+      "small_fire_GT": 962,
+      "at_30_false_boxes_per100_ceiling": {
+        "confidence": 0.2116929590702057,
+        "tiny_fire_TP": 133,
+        "small_fire_TP": 493,
+        "tiny_fire_recall": 0.403030303030303,
+        "small_fire_recall": 0.5124740124740125,
+        "false_fire_boxes": 927,
+        "false_fire_boxes_per100": 29.912875121006778,
+        "fire_free_alarm_images": 32,
+        "fire_free_images": 2220
+      },
+      "at_90percent_tiny_recall": null,
+      "rule": "Greedy score-ordered IoU>=0.5 against ALL fire GT; include confidence ties; ceiling maximizes tiny TP, then small TP, then minimizes FP",
+      "limitation": "Validation-selected descriptive thresholds; still-image boxes/alarms, not video incidents or frozen deployment performance"
+    }
+  },
+  "parameters": 2424642,
+  "recorded_Kaggle_best_metrics": {
+    "metrics/precision(B)": 0.77174,
+    "metrics/recall(B)": 0.69526,
+    "metrics/mAP50(B)": 0.77822,
+    "metrics/mAP50-95(B)": 0.46414
+  },
+  "training_hours": 10.105305555555555
+}

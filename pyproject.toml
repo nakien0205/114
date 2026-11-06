@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools==80.3.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fire-smoke-research"
+version = "0.0.0.dev0"
+description = "Fire and smoke detection research and warning prototype"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["fire_audit*", "fire_detection*", "fire_warning*", "modules*"]
+exclude = ["*.__pycache__"]
+namespaces = true
+
+[tool.setuptools.package-data]
+fire_warning = ["*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "src"]
+
