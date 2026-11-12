@@ -1,0 +1,58 @@
+{
+  "status": "specified_before_processing_video12",
+  "model": {
+    "path": "D:\\Python\\Projects\\114\\reports\\home-dfire-three-models-20261103\\runs\\plain_seed2026\\best.pt",
+    "sha256": "be8c1ec3a89ad6fd23e8af22a281699d2eb7133e18ea0b06b75ec71273492047",
+    "classes": {
+      "0": "fire",
+      "1": "smoke"
+    },
+    "fire_class": 0,
+    "training_epochs": 60,
+    "seed": 2026,
+    "selection": "Only available completed combined-data plain baseline; validation-selected best checkpoint"
+  },
+  "source": {
+    "id": "12",
+    "video": "12.mp4",
+    "video_sha256": "f2d7de67da0725fe732c636cef254b1ef68f92ca2dc045dca38f7351cf08c20c",
+    "status": "fire",
+    "t0_s": 47.69765,
+    "human_confirmed": true,
+    "multiple_events_or_cuts": false,
+    "notes": "",
+    "reviewed_utc": "2026-11-03T04:36:33.246738+00:00"
+  },
+  "truth_path": "D:\\Python\\Projects\\114\\research\\early-fire-video-evaluation-20261103\\frozen-human-burning-periods-7ebe3c113fbb.json",
+  "truth_sha256": "7ebe3c113fbb4e5021b922672759e868318a5d86cdf6f0a55010e740ff2c2c3d",
+  "references_path": "D:\\Python\\Projects\\114\\research\\early-fire-video-evaluation-20261103\\followup-confirmed-20261103\\outputs\\1efc07682508\\reference-eligibility.json",
+  "references_sha256": "0f3ed4071fa0919dce390f819bdc50ef4768b6fab77dc7c1fc10fbbef6b2888d",
+  "config": {
+    "confidence": 0.4,
+    "foreground_fraction": 0.2,
+    "confirmation_sec": 1.0,
+    "occlusion_sec": 0.1,
+    "history": 500,
+    "variance_threshold": 16.0,
+    "initial_variance": 15.0,
+    "mixtures": 3,
+    "background_ratio": 0.9,
+    "detect_shadows": true,
+    "fire_class": 0,
+    "smoke_class": 1
+  },
+  "additional_confirmation_seconds": [
+    3.0
+  ],
+  "study": "Single-video exploratory evaluation, paper-style 1s and study-adapted 3s confirmation, no tuning",
+  "localization": "IoU >= 0.50 on existing eligible reference samples only; ambiguous alignment candidates reported as bounds",
+  "no_training": true,
+  "no_commits": true,
+  "no_ground_truth_in_decisions": true,
+  "limitations": [
+    "Existing detector replaces FLAME detector",
+    "OpenCV MOG2 approximates paper background modelling",
+    "Generic flame/smoke alarms before visible flame are not necessarily false alarms; smoke onset is unknown",
+    "Alarm persistence is distinct from observed boxes; no carried box is scored as a current detection"
+  ]
+}

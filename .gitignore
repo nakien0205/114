@@ -1,5 +1,75 @@
-# Agent logs and scratchpads
+# Local assistant tools and editor state
 .agents/
+.codex/
+.claude/
+.cursor/
+.gemini/
+.aider*
+.cursorrules
+.cursorignore
+.github/copilot-instructions.md
+.github/instructions/
+.github/prompts/
+AGENTS.md
+AGENTS.override.md
+CLAUDE.md
+GEMINI.md
+
+# Browser automation logs, snapshots, and local review state
+/.playwright-cli/
+/.playwright-mcp/
+
+# Local session trackers and assistant continuation notes
+/active.md
+/active-history-*.md
+/git-changes.md
+/reports/mmodalfire-evaluation-20261013/onset-followup/active-before.md
+/research/**/HANDOFF.md
+/research/**/HANDOFF-before.md
+/research/**/*_HANDOFF*.md
+/research/demo-recovery-20261105/NEXT_WORKTREE.md
+/research/demo-recovery-20261105/continuation-thread.json
+/research/review2-preparation-20261027/assets/gain-placement-prompt.txt
+
+# Local scratch work and installed JavaScript dependencies
+/tmp/
+node_modules/
+
+# Installed package copies used by verification runs
+/research/**/.verification*/vendor/
+/research/**/verification-*/vendor/
+/research/grouped-memory-20261103/verification-vendor/
+/reports/nano-pair1-results-audit-20261029/runtime/vendor/
+/reports/head-pruning-orchestrated-debug-20261012/root/vendor/
+
+# Copied labels in temporary verification packages. Keep source, settings,
+# manifests, checks, and reports visible; retain every local copy on disk.
+/research/**/.verification*/assets/labels/
+/research/**/verification-*/assets/labels/
+/research/**/verification-*/copied-assets/labels/
+/research/**/verification-*/corrupt-load/labels/
+/research/**/verification-*/directory-load/labels/
+/research/**/packaging-verification-*/copied-from-extracted/labels/
+/research/**/packaging-verification-*/unpacked/labels/
+/research/**/split-verification-*/assets/labels/
+/research/nano-tuning-nwd-20261029/bugfix-20261030/delivery-check/assets/labels/
+
+# Staged image and label copies. Do not exclude whole research/report trees,
+# corrected source annotations, dataset identities, or evaluation results.
+/research/home-fire-challenger-20261023/verification-*/data/*/images/
+/research/home-fire-challenger-20261023/verification-*/data/*/labels/
+/research/head-pruning-causal-20261012/verification/staged-full-baseline/data/*/images/
+/research/head-pruning-causal-20261012/verification/staged-full-baseline/data/*/labels/
+/research/head-pruning-causal-20261012/verification/ARCHIVED-CHECKPOINT-EXPORT-SMOKE-*-result/data/*/labels/
+/research/head-pruning-causal-20261012/verification/ARCHIVED-CHECKPOINT-EXPORT-SMOKE-*-result/corrected-val-labels/labels/
+/reports/home-dfire-three-models-20261103/data/*/images/
+/reports/home-dfire-three-models-20261103/data/*/labels/
+/reports/dfire-friend-comparison-20261023/dfire_data/*/images/
+/reports/dfire-friend-comparison-20261023/dfire_data/*/labels/
+/reports/dfire-friend-comparison-20261023/home_data/*/images/
+/reports/dfire-friend-comparison-20261023/home_data/*/labels/
+/reports/head-pruning-orchestrated-debug-20261012/inference/staged_validation/images/
+/reports/head-pruning-orchestrated-debug-20261012/inference/staged_validation/labels/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

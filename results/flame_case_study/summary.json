@@ -1,0 +1,13 @@
+{
+  "status": "complete",
+  "last_timestamp_sec": 907.7234833333333,
+  "elapsed_sec": 643.3402784,
+  "output_sha256": "90175f16d855fda2e108212864dc92708f57162ac4969d066c2acf0cc96ab42f",
+  "frames": 54410,
+  "raw_candidate_frames": 722,
+  "moving_candidate_frames": 719,
+  "observed_confirmed_frames": 0,
+  "confirmed_alarm_frames": 0,
+  "confirmation_events": 0,
+  "first_confirmation_sec": null
+}

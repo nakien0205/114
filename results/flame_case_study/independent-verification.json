@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "frames_verified": 54410,
+  "confirmation_events": 0,
+  "raw_predictions_exactly_match_frozen_cache": true,
+  "no_fabricated_boxes": true,
+  "confirmed_state_absorbing": true,
+  "source_code_hashes_unchanged": true,
+  "output_sha256": "90175f16d855fda2e108212864dc92708f57162ac4969d066c2acf0cc96ab42f"
+}

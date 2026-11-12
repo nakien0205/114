@@ -12,72 +12,38 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-try:
-    from src.fire_audit.config import (
-        DEFAULT_EPSILON,
-        get_configured_data_root,
-        MANIFEST_DIR_NAME,
-        SPLITS_DIR_NAME,
-        SegmentationConfig,
-        SegmentationResult,
-    )
-    from src.fire_audit.audit.scanner import (
-        DatasetScanner,
-    )
-    from src.fire_audit.audit.stats import calculate_dataset_stats
-    from src.fire_audit.audit.reporter import (
-        ReportGenerator,
-        save_reports,
-    )
-    from src.fire_audit.segment.engine import VideoSegmentationEngine
-    from src.fire_audit.segment.manifest_writer import ManifestWriter
-    from src.fire_audit.prepare.partitioner import partition_dataset_by_sequence
-    from src.fire_audit.prepare.manifest import (
-        DataPreparer,
-        ManifestGenerator,
-        dataset_artifact_root,
-        prepare_pipeline_datasets,
-        resolve_dataset_roots,
-    )
-    from src.fire_audit.verify.verifier import (
-        DatasetVerifier,
-        VerificationReport,
-        print_verification_report,
-        verify_dataset_manifests,
-    )
-except ImportError:
-    from fire_audit.config import (
-        DEFAULT_EPSILON,
-        get_configured_data_root,
-        MANIFEST_DIR_NAME,
-        SPLITS_DIR_NAME,
-        SegmentationConfig,
-        SegmentationResult,
-    )
-    from fire_audit.audit.scanner import (
-        DatasetScanner,
-    )
-    from fire_audit.audit.stats import calculate_dataset_stats
-    from fire_audit.audit.reporter import (
-        ReportGenerator,
-        save_reports,
-    )
-    from fire_audit.segment.engine import VideoSegmentationEngine
-    from fire_audit.segment.manifest_writer import ManifestWriter
-    from fire_audit.prepare.partitioner import partition_dataset_by_sequence
-    from fire_audit.prepare.manifest import (
-        DataPreparer,
-        ManifestGenerator,
-        dataset_artifact_root,
-        prepare_pipeline_datasets,
-        resolve_dataset_roots,
-    )
-    from fire_audit.verify.verifier import (
-        DatasetVerifier,
-        VerificationReport,
-        print_verification_report,
-        verify_dataset_manifests,
-    )
+from fire_audit.config import (
+    DEFAULT_EPSILON,
+    get_configured_data_root,
+    MANIFEST_DIR_NAME,
+    SPLITS_DIR_NAME,
+    SegmentationConfig,
+    SegmentationResult,
+)
+from fire_audit.audit.scanner import (
+    DatasetScanner,
+)
+from fire_audit.audit.stats import calculate_dataset_stats
+from fire_audit.audit.reporter import (
+    ReportGenerator,
+    save_reports,
+)
+from fire_audit.segment.engine import VideoSegmentationEngine
+from fire_audit.segment.manifest_writer import ManifestWriter
+from fire_audit.prepare.partitioner import partition_dataset_by_sequence
+from fire_audit.prepare.manifest import (
+    DataPreparer,
+    ManifestGenerator,
+    dataset_artifact_root,
+    prepare_pipeline_datasets,
+    resolve_dataset_roots,
+)
+from fire_audit.verify.verifier import (
+    DatasetVerifier,
+    VerificationReport,
+    print_verification_report,
+    verify_dataset_manifests,
+)
 
 
 def resolve_data_dir(data_dir: Optional[Union[str, Path]]) -> Path:
@@ -334,8 +300,8 @@ def run_verify(
     print("=" * 80)
 
     if data_yaml_path is None:
-        data_yaml_path = Path("data.yaml")
-    elif Path(data_yaml_path) == Path("data.yaml") and not Path(data_yaml_path).exists():
+        data_yaml_path = (Path(__file__).resolve().parents[2] / "configs" / "data.yaml")
+    elif Path(data_yaml_path) == (Path(__file__).resolve().parents[2] / "configs" / "data.yaml") and not Path(data_yaml_path).exists():
         local_manifest_yaml = Path(MANIFEST_DIR_NAME) / "data.yaml"
         if local_manifest_yaml.exists():
             data_yaml_path = local_manifest_yaml
@@ -451,7 +417,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--data-dir",
         type=Path,
         default=None,
-        help="Root directory containing raw datasets (default: data_path from config.yaml)",
+        help="Root directory containing raw datasets (default: data_path from configs/runtime.yaml)",
     )
     parent_parser.add_argument(
         "--output-dir",
@@ -552,7 +518,7 @@ def build_parser() -> argparse.ArgumentParser:
     verify_parser.add_argument(
         "--data-yaml",
         type=Path,
-        default=Path("data.yaml"),
+        default=(Path(__file__).resolve().parents[2] / "configs" / "data.yaml"),
         help="Path to data.yaml manifest (default: data.yaml)",
     )
     verify_parser.add_argument(

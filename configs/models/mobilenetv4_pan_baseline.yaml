@@ -1,0 +1,27 @@
+# configs/models/mobilenetv4_pan_baseline.yaml
+# Architecture Specification: MobileNetV4 + Standard PAN + Attention: None
+model:
+  name: "mobilenetv4_pan_baseline"
+  type: "object_detector"
+  task: "detect"
+  nc: 2
+  names: ["fire", "smoke"]
+
+backbone:
+  type: "MobileNetV4"
+  variant: "mobilenetv4_conv_small"
+  pretrained: true
+  pretrained_source: "ImageNet-1k (timm)"
+  out_indices: [2, 3, 4]  # P3, P4, P5
+  strides: [8, 16, 32]
+
+neck:
+  type: "StandardPAN"
+  out_channels: 128
+  pathways: ["top-down", "bottom-up"]
+  attention: null  # Baseline: None
+
+head:
+  type: "YOLODecoupledHead"
+  strides: [8, 16, 32]
+  num_classes: 2

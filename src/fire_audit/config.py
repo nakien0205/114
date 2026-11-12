@@ -29,9 +29,9 @@ VALID_LABEL_EXTENSIONS: Set[str] = {".txt"}
 MANIFEST_DIR_NAME: str = "manifest"
 SPLITS_DIR_NAME: str = "splits"
 
-# The editable runtime configuration is kept at the project root.
+# Editable runtime configuration lives under configs/.
 PROJECT_ROOT: Path = Path(__file__).resolve().parents[2]
-DEFAULT_USER_CONFIG_PATH: Path = PROJECT_ROOT / "config.yaml"
+DEFAULT_USER_CONFIG_PATH: Path = PROJECT_ROOT / "configs" / "runtime.yaml"
 
 
 def get_user_config_path(config_path: Optional[Path] = None) -> Path:

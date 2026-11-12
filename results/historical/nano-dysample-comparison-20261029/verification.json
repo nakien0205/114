@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "archives": 2,
+  "epochs_per_run": 60,
+  "corrected_labels_per_run": 5200,
+  "canonical_GT_per_run": 1300,
+  "all_four_size_AP_independently_recomputed": true,
+  "all_four_matched_recall_independently_recomputed": true,
+  "reference_predictions_byte_identical": true,
+  "all_sources_match_delivery": true,
+  "new_training": false,
+  "new_inference": false,
+  "test_access": false,
+  "files": {
+    "compare.py": "9598064391d195a46032de58f64f3b2eb08261d8596b2a71db4f4a28dbe5b56a",
+    "report.md": "f93bd811ebf99b2d1365082e9401da7532a195bc1cf0eba7f83d3987e0400144",
+    "comparison.csv": "ce64df84d8ab481c5e924668a5ceb153526b4dd07dea16370d370f7fb557dfa1",
+    "results.json": "2d40abd3d36e820b17992b1e9a0f42243d860e7f96af741e3f403a6f9b107de5",
+    "provenance.json": "95c9b4fb46e9b33e2e96891c8b82051a8b4f323eb7ac472ea0fa1fdc0be4f125"
+  }
+}

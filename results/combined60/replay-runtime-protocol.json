@@ -1,0 +1,28 @@
+{
+  "runtime": {
+    "torch": "2.10.0+cu128",
+    "torchvision": "0.25.0+cu128",
+    "numpy": "2.4.6",
+    "ultralytics": "8.4.24",
+    "pycocotools": "2.0.11",
+    "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "GPU": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "cuDNN": 91002
+  },
+  "inference": {
+    "imgsz": 640,
+    "batch": 8,
+    "workers": 0,
+    "device": 0,
+    "conf": 0.001,
+    "iou": 0.7,
+    "max_det": 300,
+    "half": false,
+    "augment": false,
+    "rect": true,
+    "nms": false,
+    "plots": false,
+    "verbose": false
+  },
+  "caveat": "All five models replayed in ONE common local runtime. Torch2.10/torchvision0.25/NumPy2.4.6 differ from Kaggle training2.11/0.26/2.1.3; local AP is not exact Kaggle replay. Recorded Kaggle training metrics remain separate."
+}

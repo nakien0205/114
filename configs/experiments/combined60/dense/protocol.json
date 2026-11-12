@@ -1,0 +1,51 @@
+{
+  "model": "Dense spatial adaptive P2-P5 YOLO26 nano",
+  "seeds": [
+    42,
+    2026
+  ],
+  "runs": 2,
+  "baseline_runs": 0,
+  "epochs": 60,
+  "imgsz": 640,
+  "batch": 8,
+  "workers": 2,
+  "optimizer": "AdamW",
+  "lr0": 0.001,
+  "weight_decay": 0.0005,
+  "lrf": 0.01,
+  "cos_lr": false,
+  "warmup_epochs": 3,
+  "nbs": 64,
+  "AMP": true,
+  "data": "Complete Home Fire + D-Fire; original train/val/test membership; fire0 smoke1",
+  "frame_order_required": false,
+  "temporal_memory": false,
+  "scene_grouping_performed": false,
+  "dataset_version": "b7ff6c25e1326f9f380b73bef5cbec78fe658618169a8fdef8c6810d6a9d6ad7",
+  "counts": {
+    "dfire/test": 4306,
+    "dfire/train": 14122,
+    "dfire/val": 3099,
+    "home/test": 1300,
+    "home/train": 3900,
+    "home/val": 1300
+  },
+  "cross_split_exact_duplicate_groups": 0,
+  "seed_scope": "Common saved pre-training backbone/head from the COCO-initialized P2 model tensors; seed-specific dense neck and training randomness",
+  "primary": [
+    "fire AP IoU .50:.95 fit640 sqrt(area)<16",
+    "fire AP IoU .50:.95 fit640 sqrt(area)<32 including tiny"
+  ],
+  "operating_point": "Validation-selected ceiling 30 false fire boxes/100 images; all-fire greedy IoU0.5 matching",
+  "checkpoint_selection": "Ordinary overall validation fitness, no early stopping or automatic resume",
+  "execution": "One independent process per physical T4; logical cuda0 each; no DDP; no batch fallback",
+  "test_evaluation": false,
+  "local_training": false,
+  "T4_training_fit_verified": false,
+  "limits": [
+    "Changed dataset prevents comparison to old Home Fire-only scores as an architecture effect",
+    "No fresh baseline; two seeds do not establish an architecture gain",
+    "Source splits kept by user request; scene/event independence not established"
+  ]
+}

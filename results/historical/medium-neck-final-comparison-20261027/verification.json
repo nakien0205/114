@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "fixed_archive_CRC_members": 5285,
+  "epochs_1_to_60_finite": true,
+  "labels_verified": 5200,
+  "canonical_GT_byte_identical_to_verified_adaptive": true,
+  "fixed_size_metrics_and_matched_recall_independently_recomputed": true,
+  "baseline_prediction_bytes_match_original_and_adaptive_replay": true,
+  "adaptive_fixed_shared_start_and_pipeline_RNG_digests_identical": true,
+  "recorded_training_settings_runtime_GPU_match_all_medium_runs": true,
+  "attached_code_not_executed_checkpoints_not_deserialized": true,
+  "new_training": false,
+  "new_inference": false,
+  "test_access": false,
+  "files": {
+    "compare.py": "eb44c82867807a6e2d88747f76420c1267b74610f1d122ef3b7628ebf10240ac",
+    "medium-comparison.csv": "4108fdb8a50f60e2fcbc7338d7d470214c4e91fcdf68d1ba8ed8ad87ac3b558c",
+    "provenance.json": "6619b59695cc48e8d3704eae46487c5be66e0cdab931af82f986102a8efe1f50",
+    "report.md": "58ac482c8e3e306064f33d4db9d3582f0b5fd7386f9028513015a5ee5d824d1a",
+    "results.json": "bd35335ff853b754f6155160059b8fc8d49a53f1c1dbb5c0c924287144a366b8",
+    "six-model-context.csv": "836059fabbf8f6c3d11cd2e5b843276f9f2d6569684deccad196ee756aa64b0a"
+  }
+}

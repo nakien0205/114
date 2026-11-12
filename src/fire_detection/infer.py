@@ -17,10 +17,7 @@ import numpy as np
 import torch
 from ultralytics import YOLO
 
-try:
-    from src.fire_audit.config import get_configured_inference_source, get_configured_weights_path
-except ImportError:
-    from fire_audit.config import get_configured_inference_source, get_configured_weights_path
+from fire_audit.config import get_configured_inference_source, get_configured_weights_path
 
 logger = logging.getLogger(__name__)
 
@@ -192,14 +189,14 @@ def infer_yolo(
     """
     weights = weights if weights is not None else get_configured_weights_path()
     if weights is None:
-        raise ValueError("Inference weights are not configured; set training.weights in the config.yaml")
+        raise ValueError("Inference weights are not configured; set training.weights in the configs/runtime.yaml")
     weights_path = Path(weights).resolve()
     if not weights_path.is_file():
         raise FileNotFoundError(f"Weights file not found: {weights_path}")
 
     source = source if source is not None else get_configured_inference_source()
     if source is None:
-        raise ValueError("Inference source is not configured; set paths.inference_source in the config.yaml")
+        raise ValueError("Inference source is not configured; set paths.inference_source in the configs/runtime.yaml")
     source_path = Path(source).resolve()
     if not source_path.exists():
         raise FileNotFoundError(f"Inference source not found: {source_path}")
@@ -361,12 +358,12 @@ def build_parser() -> argparse.ArgumentParser:
         prog="infer",
         description="Run inference with YOLOv8 fire/smoke model and save visual detections",
     )
-    parser.add_argument("--weights", type=str, default=None, help="Path to fine-tuned model checkpoint (default: training.weights from config.yaml)")
+    parser.add_argument("--weights", type=str, default=None, help="Path to fine-tuned model checkpoint (default: training.weights from configs/runtime.yaml)")
     parser.add_argument(
         "--source",
         type=str,
         default=None,
-        help="Source image, directory, or video (default: paths.inference_source from config.yaml)",
+        help="Source image, directory, or video (default: paths.inference_source from configs/runtime.yaml)",
     )
     parser.add_argument("--conf", type=float, default=0.25, help="Confidence threshold (default: 0.25)")
     parser.add_argument("--iou", type=float, default=0.45, help="NMS IoU threshold (default: 0.45)")

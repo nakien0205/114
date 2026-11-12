@@ -1,0 +1,126 @@
+{
+  "model": "adaptive",
+  "seed": 42,
+  "checkpoint_sha256": "0d56d1578eea6d7cff1b89618c6bf574e242619e4049f0fb605729e10868cd70",
+  "tiny_fire_AP": 0.22361956136480057,
+  "small_fire_AP": 0.327670345559156,
+  "small_smoke_AP": 0.32362644334121315,
+  "normal": {
+    "overall": {
+      "metrics/precision(B)": 0.7893021568464011,
+      "metrics/recall(B)": 0.7119794383556272,
+      "metrics/mAP50(B)": 0.797109048064964,
+      "metrics/mAP50-95(B)": 0.48358112077295246,
+      "fitness": 0.48358112077295246
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.15802980222781254,
+      "inference": 3.8268179813587486,
+      "loss": 0.00075889975032206,
+      "postprocess": 0.22960529665804902
+    },
+    "per_class": [
+      {
+        "class_id": 0,
+        "precision": 0.7595739281727117,
+        "recall": 0.6693214399490284,
+        "AP50": 0.761730967076474,
+        "AP50_95": 0.45468360166677063
+      },
+      {
+        "class_id": 1,
+        "precision": 0.8190303855200906,
+        "recall": 0.7546374367622259,
+        "AP50": 0.8324871290534539,
+        "AP50_95": 0.5124786398791342
+      }
+    ]
+  },
+  "per_source": {
+    "home": {
+      "tiny_fire_AP": 0.4601949142997156,
+      "small_fire_AP": 0.5373364546829676
+    },
+    "dfire": {
+      "tiny_fire_AP": 0.12831656919997575,
+      "small_fire_AP": 0.24822269728067267
+    }
+  },
+  "operating_points": {
+    "combined": {
+      "images": 4399,
+      "tiny_fire_GT": 439,
+      "small_fire_GT": 1279,
+      "at_30_false_boxes_per100_ceiling": {
+        "confidence": 0.18864883482456207,
+        "tiny_fire_TP": 234,
+        "small_fire_TP": 833,
+        "tiny_fire_recall": 0.5330296127562643,
+        "small_fire_recall": 0.6512900703674745,
+        "false_fire_boxes": 1302,
+        "false_fire_boxes_per100": 29.597635826324165,
+        "fire_free_alarm_images": 44,
+        "fire_free_images": 2626
+      },
+      "at_90percent_tiny_recall": null,
+      "rule": "Greedy score-ordered IoU>=0.5 against ALL fire GT; include confidence ties; ceiling maximizes tiny TP, then small TP, then minimizes FP",
+      "limitation": "Validation-selected descriptive thresholds; still-image boxes/alarms, not video incidents or frozen deployment performance"
+    },
+    "home": {
+      "images": 1300,
+      "tiny_fire_GT": 109,
+      "small_fire_GT": 317,
+      "at_30_false_boxes_per100_ceiling": {
+        "confidence": 0.11127826571464539,
+        "tiny_fire_TP": 95,
+        "small_fire_TP": 292,
+        "tiny_fire_recall": 0.8715596330275229,
+        "small_fire_recall": 0.9211356466876972,
+        "false_fire_boxes": 380,
+        "false_fire_boxes_per100": 29.23076923076923,
+        "fire_free_alarm_images": 16,
+        "fire_free_images": 406
+      },
+      "at_90percent_tiny_recall": {
+        "confidence": 0.06628678739070892,
+        "tiny_fire_TP": 99,
+        "small_fire_TP": 298,
+        "tiny_fire_recall": 0.908256880733945,
+        "small_fire_recall": 0.9400630914826499,
+        "false_fire_boxes": 544,
+        "false_fire_boxes_per100": 41.84615384615385,
+        "fire_free_alarm_images": 24,
+        "fire_free_images": 406
+      },
+      "rule": "Greedy score-ordered IoU>=0.5 against ALL fire GT; include confidence ties; ceiling maximizes tiny TP, then small TP, then minimizes FP",
+      "limitation": "Validation-selected descriptive thresholds; still-image boxes/alarms, not video incidents or frozen deployment performance"
+    },
+    "dfire": {
+      "images": 3099,
+      "tiny_fire_GT": 330,
+      "small_fire_GT": 962,
+      "at_30_false_boxes_per100_ceiling": {
+        "confidence": 0.20857836306095123,
+        "tiny_fire_TP": 137,
+        "small_fire_TP": 529,
+        "tiny_fire_recall": 0.41515151515151516,
+        "small_fire_recall": 0.5498960498960499,
+        "false_fire_boxes": 929,
+        "false_fire_boxes_per100": 29.977412068409166,
+        "fire_free_alarm_images": 36,
+        "fire_free_images": 2220
+      },
+      "at_90percent_tiny_recall": null,
+      "rule": "Greedy score-ordered IoU>=0.5 against ALL fire GT; include confidence ties; ceiling maximizes tiny TP, then small TP, then minimizes FP",
+      "limitation": "Validation-selected descriptive thresholds; still-image boxes/alarms, not video incidents or frozen deployment performance"
+    }
+  },
+  "parameters": 2522449,
+  "recorded_Kaggle_best_metrics": {
+    "metrics/precision(B)": 0.7931,
+    "metrics/recall(B)": 0.70732,
+    "metrics/mAP50(B)": 0.79724,
+    "metrics/mAP50-95(B)": 0.48354
+  },
+  "training_hours": 8.998083333333334
+}

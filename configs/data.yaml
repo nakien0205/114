@@ -1,0 +1,11 @@
+# Tracked dataset template. Set the root for your local dataset, or pass an
+# experiment-specific YAML explicitly. This file does not select a thesis method.
+path: ../datasets/combined_dataset
+train: train/images
+val: val/images
+test: test/images
+
+nc: 2
+names:
+  0: fire
+  1: smoke

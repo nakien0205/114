@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "archive_CRC_members": 5290,
+  "labels_verified": 5200,
+  "canonical_GT_verified": 1300,
+  "epochs_1_to_60_finite": true,
+  "size_AP_independently_recomputed": true,
+  "matched_recall_independently_recomputed": true,
+  "historical_baseline_predictions_byte_identical": true,
+  "attached_sources_compared_not_executed": true,
+  "checkpoint_hashes_verified_without_deserialization": true,
+  "actual_training_arguments_checked": true,
+  "pycocotools": "2.0.11",
+  "numpy": "2.4.6",
+  "new_training": false,
+  "new_inference": false,
+  "test_access": false,
+  "files": {
+    "compare.py": "8b134d605b9ed454f8b0bba1912beeeffd887275c5dad9eb2e6b9afc6f23a99c",
+    "comparison.csv": "198684e9419b3bf866d8673c35fd825856d64cac886e4b3c184ee1b89e737419",
+    "paired-tiny-at-025.json": "114417cfe0df43efe4548b416a1cfe00024a32747d8d0bb764ec9d7667295451",
+    "provenance.json": "5cf0f5a6958823929f0e9910f7d8581cace65bc9d655551a9693b97a9dd47ec8",
+    "report.md": "171c007846eab9997049741f1c543ea437668f5e7f26abb1d12b9277b9e05d71",
+    "results.json": "79a2bf375933f2e42b34f67811bdb858744676285d4914168aef61d27a735738"
+  }
+}

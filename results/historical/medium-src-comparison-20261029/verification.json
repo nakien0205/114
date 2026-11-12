@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "archive_CRC_members": 5290,
+  "labels_verified": 5200,
+  "canonical_GT_verified": 1300,
+  "finite_epochs_1_to_60": true,
+  "size_AP_independently_recomputed": true,
+  "matched_recall_independently_recomputed": true,
+  "actual_args_checked": true,
+  "sources_compared_not_executed": true,
+  "checkpoints_hashed_not_deserialized": true,
+  "baseline_prediction_bytes_match_original": true,
+  "historical_plain_full_initial_state_equality_proven": false,
+  "pycocotools": "2.0.11",
+  "new_training": false,
+  "new_inference": false,
+  "test_access": false,
+  "files": {
+    "compare.py": "a0cdaea57021ac997416ba5b1d10e5080d88c8412544c1496d3a5fbaa8f85ca3",
+    "comparison.csv": "ba03a1949a34faccc7177128779c3801b1cc598990ed69efb4cb6e1eb070dc80",
+    "provenance.json": "8f535b3af214261e2f8b66f993bce38512bb4cfa0a407b00f9e14652072b10f9",
+    "report.md": "d534adec63c303eb6c173ac862aac7cfb9cd0625e19522a85dbe8e32370d649d",
+    "results.json": "2708eb069d4b2fe0344dc6f4657ffbebe1b9f1ca2ef1425696c213f537f1de09",
+    "sheet-verification.json": "2c7e8583f19d2cddfeee50cdd56d8d72310936b4abfcfc9d9f810f46aa7203f4",
+    "sheet-write-plan.json": "35ea51fef8364a61bd6f911a4a03fea4d55bf6179d9e6d7588302a3f434186d8"
+  },
+  "sheet_row": "Testing!A58:O58",
+  "sheet_readback_verified": true
+}

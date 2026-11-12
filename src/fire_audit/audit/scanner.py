@@ -9,13 +9,13 @@ from typing import Dict, List, Optional, Set, Tuple
 
 from PIL import Image
 
-from src.fire_audit.config import (
+from fire_audit.config import (
     DEFAULT_EPSILON,
     VALID_IMAGE_EXTENSIONS,
     DatasetScanResult,
     ImageRecord,
 )
-from src.fire_audit.audit.validator import (
+from fire_audit.audit.validator import (
     validate_image_file,
     validate_label_file,
 )

@@ -13,34 +13,19 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import yaml
 
-try:
-    from src.fire_audit.config import (
-        CLASS_MAP,
-        CLASS_NAMES,
-        DEFAULT_EPSILON,
-        get_configured_data_root,
-        MANIFEST_DIR_NAME,
-        SPLITS_DIR_NAME,
-        SegmentationResult,
-    )
-    from src.fire_audit.prepare.isolator import DatasetIsolator, IsolationResult
-    from src.fire_audit.prepare.partitioner import SequencePartitioner, PartitionResult
-    from src.fire_audit.segment.engine import VideoSegmentationEngine
-    from src.fire_audit.segment.manifest_writer import ManifestWriter
-except ImportError:
-    from fire_audit.config import (
-        CLASS_MAP,
-        CLASS_NAMES,
-        DEFAULT_EPSILON,
-        get_configured_data_root,
-        MANIFEST_DIR_NAME,
-        SPLITS_DIR_NAME,
-        SegmentationResult,
-    )
-    from fire_audit.prepare.isolator import DatasetIsolator, IsolationResult
-    from fire_audit.prepare.partitioner import SequencePartitioner, PartitionResult
-    from fire_audit.segment.engine import VideoSegmentationEngine
-    from fire_audit.segment.manifest_writer import ManifestWriter
+from fire_audit.config import (
+    CLASS_MAP,
+    CLASS_NAMES,
+    DEFAULT_EPSILON,
+    get_configured_data_root,
+    MANIFEST_DIR_NAME,
+    SPLITS_DIR_NAME,
+    SegmentationResult,
+)
+from fire_audit.prepare.isolator import DatasetIsolator, IsolationResult
+from fire_audit.prepare.partitioner import SequencePartitioner, PartitionResult
+from fire_audit.segment.engine import VideoSegmentationEngine
+from fire_audit.segment.manifest_writer import ManifestWriter
 
 
 @dataclass

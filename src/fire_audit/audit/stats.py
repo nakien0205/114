@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections import Counter
 from typing import Any, Dict, List, Optional
 
-from src.fire_audit.config import (
+from fire_audit.config import (
     CLASS_MAP,
     DatasetScanResult,
     DatasetStats,
