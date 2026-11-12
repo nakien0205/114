@@ -291,55 +291,15 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Others
-# Generated training and evaluation artifacts
-/runs/
+tests/
+datasets/
 wandb/
-weights/
-*.pt
-
-ORIGINAL_REQUEST.md
-PROJECT_REQUIREMENTS.md
-PROJECT.md
-TEST_INFRA.md
-TEST_READY.md
-manual_review_needed.json
 yolo26n.pt
-yolov8n.pt
-yolo11n.pt
-test_metrics.csv
-DATASET.md
-dataset_audit_report.md
-dataset_audit_report.json
-dataset_report.json
-dataset_verification_report.json
-/datasets/
-data_preparation.ipynb
-
-# Local historical workspace; selected source and results are copied into
-# experiments/, results/, and concise docs/. Originals remain on disk.
-/research/
-/reports/
-/system_4stage/
-/papers/
-/output/
-/data/
-/experiments/home_fire_cross_cue/
-/experiments/smoke_fire_neck/
-/CHANGE_LOG.md
-/EDGE_DEVICE_DECISION.md
-/FASDD_SPLIT_AUDIT.md
-/HOME_FIRE_SPLIT_AUDIT.md
-/NECK_PAPER_COMPARISON.md
-/NECK_SCOPING_REVIEW.md
-/P2_CROSS_CUE_EXPERIMENT.md
-/THESIS_RESEARCH_NOTES.md
-/active-history-2026-10-07.md
-/active.md
-/git-changes.md
-/neck-proposed.md
-/new-attention.md
-/propose-neck.md
-/FASDD_CV_adjacent_cross_split.csv
-/FASDD_CV_dhash8_cross_split.csv
-/docs/CITATION.cff.example
-/experiments/**/runs/
+experiments/
+weights/
+runs/
+papers/
+research/
+active.md
+neck-proposed.md
+new-attention.md
